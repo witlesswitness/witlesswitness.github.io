@@ -29,7 +29,6 @@ h1 {
     font-family: "Ubuntu", sans-serif;
     font-weight: 200;
     color: whitesmoke;
-    font-size: 100px;
     font-size: 10vw;
     text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6, 0 0 25px #0073e6, 0 0 30px #0073e6, 0 0 35px #0073e6;
 }
@@ -37,7 +36,6 @@ h2 {
     font-family: "Ubuntu", sans-serif;
     font-weight: 100;
     color: whitesmoke;
-    font-size: 100px;
     font-size: 3vw;
     text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #0073e6, 0 0 7px #0073e6, 0 0 8px #0073e6, 0 0 9px #0073e6, 0 0 8px #0073e6;
     line-height: 10px;
