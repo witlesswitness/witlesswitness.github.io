@@ -47,7 +47,7 @@ h2 {
     font-family: "Ubuntu", sans-serif;
     color: whitesmoke;
     font-weight: 100;
-    font-size: 3vw;
+    font-size: 4vw;
     text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #0073e6, 0 0 7px #0073e6, 0 0 8px #0073e6, 0 0 9px #0073e6, 0 0 8px #0073e6;
     margin-top: 1vw;
     text-align: center;
@@ -61,4 +61,28 @@ p {
     margin-left: 5vw;
     margin-right: 5vw;
     color: whitesmoke;
+}
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    text-decoration: none;
+    color: initial;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 2px;
+    border-color: whitesmoke;
+    font-family: "Ubuntu", sans-serif;
+    color: whitesmoke;
+    font-weight: 100;
+    font-size: 50px;
+    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #0073e6, 0 0 7px #0073e6, 0 0 8px #0073e6, 0 0 9px #0073e6, 0 0 8px #0073e6;
+}
+.buttons-holder {
+  position: relative;
+  display: block;
+  text-align: center;
+  height: auto;
+  padding: 2vw;
+  padding-left: 2vw;
 }
