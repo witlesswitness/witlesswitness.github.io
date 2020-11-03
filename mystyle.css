@@ -1,20 +1,31 @@
+html {
+    height:100%
+}
 body {
-	background: linear-gradient(-45deg,#1a1a1a, #070606, #470012, #7a002b);
-	background-size: cover;
-	animation: gradient 15s ease infinite;
+    background: linear-gradient(98deg, #000000, #7a002b, #013803, #740070, #000000);
+    background-size: 800% 800%;
+
+    -webkit-animation: backgroundgradient 45s ease infinite;
+    -moz-animation: backgroundgradient 45s ease infinite;
+    animation: backgroundgradient 45s ease infinite;
 }
 
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+@-webkit-keyframes backgroundgradient {
+    0%{background-position:0% 5%}
+    50%{background-position:100% 96%}
+    100%{background-position:0% 5%}
 }
-H1 {
+@-moz-keyframes backgroundgradient {
+    0%{background-position:0% 5%}
+    50%{background-position:100% 96%}
+    100%{background-position:0% 5%}
+}
+@keyframes backgroundgradient {
+    0%{background-position:0% 5%}
+    50%{background-position:100% 96%}
+    100%{background-position:0% 5%}
+}
+h1 {
     text-align:right
+    
 }
