@@ -69,6 +69,7 @@ a.button {
     text-decoration: none;
     cursor: pointer;
     color: transparent;
+    background: transparent;
     box-sizing: border-box;
     padding: 10px;
     border: 2px;
