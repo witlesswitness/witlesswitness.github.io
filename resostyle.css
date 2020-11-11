@@ -1,27 +1,7 @@
 html {
-    height:100%
-}
-body {
-    background: linear-gradient(98deg, #000000, #7a002b, #013803, #740070, #000000);
-    background-size: 1000% 1000%;
-    -webkit-animation: backgroundgradient 45s ease infinite;
-    -moz-animation: backgroundgradient 45s ease infinite;
-    animation: backgroundgradient 45s ease infinite;
-}
-@-webkit-keyframes backgroundgradient {
-    0%{background-position:0% 5%}
-    50%{background-position:100% 96%}
-    100%{background-position:0% 5%}
-}
-@-moz-keyframes backgroundgradient {
-    0%{background-position:0% 5%}
-    50%{background-position:100% 96%}
-    100%{background-position:0% 5%}
-}
-@keyframes backgroundgradient {
-    0%{background-position:0% 5%}
-    50%{background-position:100% 96%}
-    100%{background-position:0% 5%}
+    background-color: #1c2429;
+    color: #39FF14;
+    margin-left: 2vw;
 }
 @font-face {
   font-family: 'Prompt';
@@ -48,33 +28,46 @@ body {
   src: local('Ubuntu Light'), local('Ubuntu-Light'), url(https://fonts.gstatic.com/s/ubuntu/v15/4iCv6KVjbNBYlgoC1CzjsGyN.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+a.button {
+    text-decoration: none;
+    cursor: pointer;
+    color: transparent;
+    background: transparent;
+    box-sizing: border-box;
+    color: #39FF14;
+    font-size: 1.5em;
+    transition: all 0.6s ease-in-out;
+    border-color: #39FF14;
+}
+.buttons-holder {
+  position: relative;
+  display: grid, -webkit-flex;
+  justify-content: space-evenly;
+  align-content: space-evenly;
+  flex-wrap: wrap;
+  text-align: center;
+}
+a:hover {
+    box-shadow: 0 0 5px #39FF14;
+    transition: box-shadow 0.5s ease-in-out;
+}
+h1 {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 200;
+}
 h2 {
     font-family: "Ubuntu", sans-serif;
     font-weight: 200;
-    color: whitesmoke;
-    font-size: 3vw;
-    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6, 0 0 25px #0073e6, 0 0 30px #0073e6, 0 0 35px #0073e6;
-    margin-bottom: 0;
-    margin-top: 4vw;
-    text-align: justfied;
 }
 h3 {
     font-family: "Ubuntu", sans-serif;
-    color: whitesmoke;
-    font-weight: 100;
-    font-size: 2vw;
-    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #0073e6, 0 0 7px #0073e6, 0 0 8px #0073e6, 0 0 9px #0073e6, 0 0 8px #0073e6;
-    margin-top: 1vw;
-    margin-bottom: 0.5vw;
-    text-align: justfied;
+    font-weight: 200;
 }
 p {
-    font-family: 'Prompt', sans-serif;
-    font-weight: 100;
-    font-style: italic;
-    font-size:20px;
-    text-align: justfied;
-    margin-left: 5vw;
-    margin-right: 5vw;
-    color: whitesmoke;
+    font-family: "Prompt", sans-serif;
+    font-weight: 200;
+}
+ul {
+    font-family: "Prompt", sans-serif;
+    font-weight: 200;
 }
