@@ -36,7 +36,7 @@ body {
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
-  font-weight: 300;
+  font-weight: 100;
   font-display: swap;
   src: local('Ubuntu Light'), local('Ubuntu-Light'), url(https://fonts.gstatic.com/s/ubuntu/v15/4iCv6KVjbNBYlgoC1CzjvmyNL4U.woff2) format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -45,7 +45,7 @@ body {
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
-  font-weight: 300;
+  font-weight: 100;
   font-display: swap;
   src: local('Ubuntu Light'), local('Ubuntu-Light'), url(https://fonts.gstatic.com/s/ubuntu/v15/4iCv6KVjbNBYlgoC1CzjsGyN.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -68,6 +68,7 @@ h2 {
     font-size: 4vw;
     text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #0073e6, 0 0 7px #0073e6, 0 0 8px #0073e6, 0 0 9px #0073e6, 0 0 8px #0073e6;
     margin-top: 1vw;
+    margin-bottom: 0.5vw;
     text-align: center;
 }
 p {
@@ -98,12 +99,22 @@ a.button {
     border-radius: 10px;
     text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #0073e6, 0 0 7px #0073e6, 0 0 8px #0073e6, 0 0 9px #0073e6, 0 0 8px #0073e6;
 }
-.button:hover { 
+a:hover { 
     box-shadow:  0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6, 0 0 25px #0073e6, 0 0 30px #0073e6, 0 0 35px #0073e6;
     transition: box-shadow 0.5s ease-in-out;
 }
 .buttons-holder {
   position: relative;
-  display: -webkit-flex, center;
+  display: grid, -webkit-flex;
+  justify-content: space-evenly;
+  align-content: space-evenly;
+  flex-wrap: wrap;
   text-align: center;
+}
+@media only screen and (max-width: 1200px) { 
+  .buttons-holder {
+    display: flex;
+    position: center;
+    flex-flow: column;
+  }
 }
