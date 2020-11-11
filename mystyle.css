@@ -68,7 +68,7 @@ a.button {
     appearance: button;
     text-decoration: none;
     cursor: pointer;
-    color: initial;
+    color: transparent;
     box-sizing: border-box;
     padding: 10px;
     border: 2px;
