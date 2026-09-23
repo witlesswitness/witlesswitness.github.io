@@ -1,12 +1,18 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+>
 
 <title>☕ The Barista Express Survival Guide ✨</title>
 
 <style>
+
 :root {
   --pink:#ff79c9;
   --hot:#ff2f92;
@@ -22,28 +28,39 @@
 
 html {
   scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
 }
 
 body {
   margin:0;
+
   color:var(--ink);
 
-  /* ✨ readable where it matters ✨ */
-  font-family:Arial, Helvetica, sans-serif;
+  /*
+    THE IMPORTANT PART:
+    Actual reading gets an extremely normal font.
+  */
+  font-family:Arial, Helvetica, sans-serif !important;
   font-size:17px;
   line-height:1.55;
 
-  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Ctext x='4' y='25' font-size='16'%3E%E2%9C%A8%3C/text%3E%3Ctext x='42' y='60' font-size='13'%3E%E2%98%95%3C/text%3E%3C/svg%3E") fixed;
+  background:#fff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Ctext x='4' y='25' font-size='16'%3E%E2%9C%A8%3C/text%3E%3Ctext x='42' y='60' font-size='13'%3E%E2%98%95%3C/text%3E%3C/svg%3E")
+    fixed;
 
   overflow-x:hidden;
-
-  /* Don't let iPhone Safari randomly resize things */
-  -webkit-text-size-adjust:100%;
 }
 
-/* ==================================================
-   ✨ COMIC SANS IS A PRIVILEGE, NOT A RIGHT ✨
-   ================================================== */
+
+/* ==========================================
+   ✨ CONTROLLED TYPOGRAPHIC CHAOS ✨
+   ========================================== */
+
+/*
+  Y2K nonsense gets Comic Sans.
+  Actual instructions do NOT.
+*/
 
 h1,
 h2,
@@ -52,12 +69,22 @@ h3,
 .rain-toggle,
 .ticker,
 .blink {
-  font-family:"Comic Sans MS","Comic Sans",cursive;
+  font-family:
+    "Comic Sans MS",
+    "Comic Sans",
+    "Arial Rounded MT Bold",
+    Arial,
+    sans-serif !important;
 }
 
 p,
-li {
-  font-family:Arial, Helvetica, sans-serif;
+li,
+small,
+.danger {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif !important;
 }
 
 a {
@@ -70,42 +97,57 @@ a {
 }
 
 
-/* =========================
-   EXTREMELY IMPORTANT TICKER
-   ========================= */
+/* ==========================================
+   🚨 EXTREMELY IMPORTANT TICKER 🚨
+   ========================================== */
 
 .ticker {
   background:#111;
   color:#fff700;
+
   border-block:4px ridge #ddd;
+
   padding:7px 0;
+
   font-weight:bold;
+
   overflow:hidden;
   white-space:nowrap;
 }
 
 .ticker span {
   display:inline-block;
+
   padding-left:100%;
-  animation:marquee 18s linear infinite;
+
+  animation:
+    marquee 18s linear infinite;
 }
 
 @keyframes marquee {
+
   to {
-    transform:translateX(-100%);
+    transform:
+      translateX(-100%);
   }
+
 }
 
 
-/* =========================
-   HERO
-   ========================= */
+/* ==========================================
+   ✨ HERO ✨
+   ========================================== */
 
 .hero {
   margin:18px auto;
-  padding:clamp(16px,4vw,35px);
+
+  padding:
+    clamp(16px,4vw,35px);
+
   text-align:center;
-  border:7px outset var(--pink);
+
+  border:
+    7px outset var(--pink);
 
   background:
     linear-gradient(
@@ -115,46 +157,64 @@ a {
       #bdefff
     );
 
-  box-shadow:8px 8px 0 #000;
+  box-shadow:
+    8px 8px 0 #000;
 }
 
 .hero h1 {
-  font-size:clamp(2.1rem,8vw,5rem);
-  line-height:.9;
+  font-size:
+    clamp(2.1rem,8vw,5rem);
+
+  line-height:.95;
+
   margin:.15em 0;
 
   text-shadow:
     3px 3px #fff,
     -2px -2px var(--pink);
 
-  transform:rotate(-1deg);
+  transform:
+    rotate(-1deg);
 }
 
 .hero .sub {
-  font-size:clamp(1rem,3.4vw,1.5rem);
+  font-size:
+    clamp(1rem,3.4vw,1.5rem);
+
+  line-height:1.4;
 }
 
 .blink {
-  animation:blink .85s steps(2,end) infinite;
+  animation:
+    blink .85s steps(2,end) infinite;
 }
 
 @keyframes blink {
+
   50% {
     visibility:hidden;
   }
+
 }
 
 
-/* =========================
-   BEAUTIFUL 2002 BUTTON
-   ========================= */
+/* ==========================================
+   💖 BEAUTIFUL 2002 BUTTON 💖
+   ========================================== */
 
 .bigbtn {
   display:inline-block;
-  margin:12px;
-  padding:14px 20px;
 
-  border:5px outset #eee;
+  margin:12px;
+
+  padding:
+    14px 20px;
+
+  max-width:
+    calc(100% - 24px);
+
+  border:
+    5px outset #eee;
 
   background:
     linear-gradient(
@@ -162,21 +222,31 @@ a {
       #ff9fda
     );
 
-  font:
-    700 clamp(1rem,4vw,1.3rem)
-    "Comic Sans MS",
-    cursive;
+  font-size:
+    clamp(1rem,4vw,1.3rem);
+
+  font-weight:700;
+
+  line-height:1.3;
 
   color:#000;
+
   text-decoration:none;
 
-  box-shadow:4px 4px #000;
+  box-shadow:
+    4px 4px #000;
+
+  overflow-wrap:break-word;
 }
 
 .bigbtn:active {
   border-style:inset;
-  transform:translate(3px,3px);
-  box-shadow:1px 1px #000;
+
+  transform:
+    translate(3px,3px);
+
+  box-shadow:
+    1px 1px #000;
 }
 
 .tiny {
@@ -184,22 +254,34 @@ a {
 }
 
 
-/* =========================
-   CARDS
-   ========================= */
+/* ==========================================
+   🗃️ CARDS
+   ========================================== */
 
 .grid {
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
   gap:18px;
-  margin:22px auto;
+
+  margin:
+    22px auto;
 }
 
 .card {
+  min-width:0;
+
   padding:18px;
-  border:5px ridge #ddd;
+
+  border:
+    5px ridge #ddd;
+
   background:#fff;
-  box-shadow:5px 5px 0 rgba(0,0,0,.8);
+
+  box-shadow:
+    5px 5px 0 rgba(0,0,0,.8);
 }
 
 .card:nth-child(4n+1) {
@@ -219,101 +301,153 @@ a {
 }
 
 .card h2 {
-  font-size:clamp(1.5rem,5vw,2.1rem);
-  margin:0 0 8px;
+  font-size:
+    clamp(1.5rem,5vw,2.1rem);
+
+  line-height:1.15;
+
+  margin:
+    0 0 8px;
+
+  overflow-wrap:break-word;
+}
+
+.card h3 {
+  line-height:1.2;
 }
 
 
-/* =========================
-   ESPRESSO RECIPE
-   ========================= */
+/* ==========================================
+   ☕ ESPRESSO CHEAT CODE ☕
+   ========================================== */
 
 .recipe {
-  font-family:Arial,sans-serif;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif !important;
+
   font-weight:900;
+
   text-align:center;
 
   font-size:
     clamp(1.15rem,4vw,1.65rem);
 
-  border:4px dashed #000;
+  line-height:1.4;
+
+  border:
+    4px dashed #000;
+
   padding:12px;
+
   background:#fff;
+
+  overflow-wrap:break-word;
 }
 
 .danger {
   background:#fffd64;
-  border:5px double red;
+
+  border:
+    5px double red;
+
   padding:13px;
+
+  line-height:1.5;
 }
 
 .steps li {
   margin:.65em 0;
+
   line-height:1.55;
 }
 
 
-/* =========================
-   YOUTUBE
-   ========================= */
+/* ==========================================
+   📺 YOUTUBE
+   ========================================== */
 
 .video {
-  aspect-ratio:16/9;
+  aspect-ratio:16 / 9;
+
   width:100%;
-  border:6px ridge var(--purple);
+
+  border:
+    6px ridge var(--purple);
+
   background:#222;
+
+  overflow:hidden;
 }
 
 .video iframe {
+  display:block;
+
   width:100%;
   height:100%;
+
   border:0;
 }
 
 .video-placeholder {
-  display:grid;
-  place-items:center;
-  text-align:center;
+  width:100%;
   height:100%;
-  padding:20px;
+
+  text-align:center;
+
   color:white;
 }
 
 
-/* =========================
-   ORIGINAL AD
-   ========================= */
+/* ==========================================
+   💾 ORIGINAL AD
+   ========================================== */
 
 .adbox {
   text-align:center;
 }
 
 .adbox img {
+  display:block;
+
   max-width:100%;
+
   height:auto;
-  border:5px outset #eee;
+
+  margin:auto;
+
+  border:
+    5px outset #eee;
 }
 
 
-/* =========================
-   FAKE VISITOR COUNTER
-   ========================= */
+/* ==========================================
+   👁️ TOTALLY REAL VISITOR COUNTER
+   ========================================== */
 
 .counter {
-  font-family:"Courier New",monospace;
+  font-family:
+    "Courier New",
+    monospace !important;
+
   background:#000;
+
   color:#39ff14;
 
-  padding:6px 10px;
+  padding:
+    6px 10px;
+
   display:inline-block;
 
-  border:3px inset #bbb;
+  border:
+    3px inset #bbb;
 }
 
 
-/* =========================
+/* ==========================================
    ☕ COFFEE RAIN ☕
-   ========================= */
+   ========================================== */
 
 .rain-toggle {
   position:fixed;
@@ -331,20 +465,26 @@ a {
   z-index:9999;
 
   background:#fff;
-  border:4px outset #ddd;
 
-  padding:9px 12px;
+  border:
+    4px outset #ddd;
 
-  font:
-    bold 14px
-    "Comic Sans MS",
-    cursive;
+  padding:
+    9px 12px;
 
-  box-shadow:3px 3px #000;
+  font-size:14px;
+
+  font-weight:bold;
+
+  box-shadow:
+    3px 3px #000;
+
+  cursor:pointer;
 }
 
 .drop {
   position:fixed;
+
   top:-60px;
 
   z-index:9998;
@@ -355,12 +495,15 @@ a {
     fall linear forwards;
 
   filter:
-    drop-shadow(2px 2px 0 #fff);
+    drop-shadow(
+      2px 2px 0 #fff
+    );
 }
 
 @keyframes fall {
 
   to {
+
     transform:
       translate(
         var(--drift),
@@ -376,9 +519,9 @@ a {
 }
 
 
-/* =========================
-   FOOTER
-   ========================= */
+/* ==========================================
+   💻 EXTREMELY SERIOUS FOOTER
+   ========================================== */
 
 footer {
   text-align:center;
@@ -389,6 +532,7 @@ footer {
   padding:18px;
 
   background:#000;
+
   color:#fff;
 
   border:
@@ -396,81 +540,290 @@ footer {
 }
 
 
-/* =========================
-   📱 MOBILE VERSION 📱
-   ========================= */
+/* ==========================================
+   📱📱📱 IPHONE / MOBILE 📱📱📱
+   ========================================== */
 
 @media(max-width:700px) {
 
   body {
-    font-size:17px;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:17px !important;
+
     line-height:1.6;
   }
 
-  .grid {
-    grid-template-columns:1fr;
+
+  /* Give the page a little breathing room */
+
+  .wrap {
+    width:94vw;
   }
 
+
+  /* One card per row */
+
+  .grid {
+    grid-template-columns:1fr;
+
+    gap:16px;
+
+    margin:
+      18px auto;
+  }
+
+
+  /* HERO */
+
   .hero {
-    box-shadow:
-      4px 4px 0 #000;
+    margin:
+      14px auto;
+
+    padding:
+      24px 14px;
 
     border-width:5px;
+
+    box-shadow:
+      4px 4px 0 #000;
+  }
+
+  .hero h1 {
+    font-family:
+      "Comic Sans MS",
+      "Comic Sans",
+      "Arial Rounded MT Bold",
+      Arial,
+      sans-serif !important;
+
+    /*
+      Big and stupid, but not
+      "I can't read this" big and stupid.
+    */
+
+    font-size:
+      clamp(2rem,11vw,3.2rem);
+
+    line-height:1;
+
+    margin:
+      .25em 0;
   }
 
   .hero .sub {
-    line-height:1.4;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:18px;
+
+    line-height:1.45;
   }
 
+
+  /* BUTTON */
+
+  .bigbtn {
+    font-family:
+      "Arial Rounded MT Bold",
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:17px;
+
+    line-height:1.35;
+
+    margin:
+      14px 0;
+
+    padding:
+      14px 12px;
+
+    width:
+      min(100%,500px);
+  }
+
+
+  /* CARDS */
+
   .card {
+    padding:16px;
+
     box-shadow:
       3px 3px 0 #000;
-
-    padding:15px;
   }
 
   .card p,
   .card li {
-    font-size:17px;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:17px !important;
+
+    line-height:1.6;
   }
 
   .card h2 {
+    font-family:
+      "Arial Rounded MT Bold",
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:
+      clamp(1.45rem,7vw,1.9rem);
+
     line-height:1.15;
+
+    letter-spacing:0;
   }
 
-  .rain-toggle {
-    font-size:12px;
-    padding:7px 9px;
+  .card h3 {
+    font-family:
+      "Arial Rounded MT Bold",
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:1.25rem;
+  }
+
+
+  /*
+    ☕ THE CHEAT CODE
+
+    Stack the recipe vertically on phones.
+    Much cleaner than trying to squeeze
+    everything onto one line.
+  */
+
+  .recipe {
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:20px;
+
+    line-height:1.55;
+
+    padding:
+      14px 8px;
+  }
+
+  .recipe .recipe-part {
+    display:block;
+  }
+
+  .recipe .recipe-arrow {
+    display:block;
+
+    line-height:1;
+  }
+
+
+  /* Lists */
+
+  .steps {
+    padding-left:25px;
+  }
+
+
+  /* YouTube */
+
+  .video {
+    border-width:4px;
+  }
+
+  .video-placeholder {
+    padding:0;
+  }
+
+
+  /* Small text */
+
+  .tiny {
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:14px !important;
+
+    line-height:1.45;
+  }
+
+
+  /* Ticker stays stupid */
+
+  .ticker {
+    font-family:
+      "Comic Sans MS",
+      "Comic Sans",
+      Arial,
+      sans-serif !important;
+
+    font-size:14px;
   }
 
   .ticker span {
-    animation-duration:12s;
+    animation-duration:14s;
   }
 
-  .steps {
-    padding-left:24px;
+
+  /* Coffee rain button */
+
+  .rain-toggle {
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif !important;
+
+    font-size:12px;
+
+    padding:
+      7px 9px;
   }
 
-  .tiny {
-    font-size:14px;
-    line-height:1.4;
+
+  /*
+    Falling objects are smaller on phones
+    so they don't cover half the paragraph.
+  */
+
+  .drop {
+    max-font-size:32px;
   }
 
 }
 
 
-/* Accessibility:
-   don't assault people who have
-   reduced motion enabled */
+/* ==========================================
+   ♿ REDUCED MOTION
+   ========================================== */
 
 @media(prefers-reduced-motion:reduce) {
 
   *,
   *:before,
   *:after {
-    animation-duration:.001ms!important;
-    animation-iteration-count:1!important;
-    scroll-behavior:auto!important;
+
+    animation-duration:
+      .001ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    scroll-behavior:
+      auto !important;
   }
 
   .ticker span {
@@ -482,41 +835,60 @@ footer {
 </style>
 </head>
 
+
 <body>
 
-<!-- SCROLLING NONSENSE -->
+
+<!-- ==========================================
+     🚨 SCROLLING NONSENSE 🚨
+     ========================================== -->
 
 <div class="ticker">
+
   <span>
+
     ✨ FRESH BEANS!!!
     ☕ FINE GRIND!!!
     🫘 HOT GIRL ESPRESSO!!!
     💖 PURGE YOUR STEAM WAND!!!
     ✨ THIS AIN'T NO NESPRESSO, FOLKS!!!
     ☕
+
   </span>
+
 </div>
 
 
 <main class="wrap">
 
-<!-- =====================
-     HERO
-     ===================== -->
+
+<!-- ==========================================
+     ✨ HERO ✨
+     ========================================== -->
 
 <section class="hero">
 
   <div class="blink">
+
     ✨✨✨ IMPORTANT WEBSITE ✨✨✨
+
   </div>
 
+
   <h1>
+
     HEY!!! YOU!!!
+
     <br>
+
     DO YOU LIKE
+
     <br>
+
     ESPRESSO? ☕
+
   </h1>
+
 
   <p class="sub">
 
@@ -533,19 +905,25 @@ footer {
 
   </p>
 
+
   <a
     class="bigbtn"
     href="#cheat"
   >
+
     ☕ TEACH ME HOW TO ESPRESSO ☕
+
   </a>
+
 
   <p class="tiny">
 
     <i>
+
       Don't panic. It has approximately
       900 controls and you're going to
       care about, like, four of them.
+
     </i>
 
   </p>
@@ -553,9 +931,10 @@ footer {
 </section>
 
 
-<!-- =====================
-     ESPRESSO INSTRUCTIONS
-     ===================== -->
+
+<!-- ==========================================
+     ☕ ESPRESSO INSTRUCTIONS ☕
+     ========================================== -->
 
 <div
   class="grid"
@@ -571,20 +950,40 @@ footer {
     💖 THE CHEAT CODE
   </h2>
 
+
   <div class="recipe">
 
-    18g COFFEE
-    →
-    ~36g ESPRESSO
-    →
-    ~25–30 SEC
+    <span class="recipe-part">
+      18g COFFEE
+    </span>
+
+    <span class="recipe-arrow">
+      →
+    </span>
+
+    <span class="recipe-part">
+      ~36g ESPRESSO
+    </span>
+
+    <span class="recipe-arrow">
+      →
+    </span>
+
+    <span class="recipe-part">
+      ~25–30 SEC
+    </span>
 
   </div>
+
 
   <p>
 
     This is your
-    <b>starting point</b>,
+
+    <b>
+      starting point
+    </b>,
+
     not a sacred law.
 
     Use the double basket.
@@ -595,6 +994,7 @@ footer {
 
   </p>
 
+
   <div class="danger">
 
     <b>
@@ -604,7 +1004,10 @@ footer {
     <br>
 
     Change
-    <u>one thing at a time</u>.
+
+    <u>
+      one thing at a time
+    </u>.
 
     Usually, start by adjusting
     the grind.
@@ -612,6 +1015,7 @@ footer {
   </div>
 
 </section>
+
 
 
 <!-- BEANS -->
@@ -622,11 +1026,14 @@ footer {
     🫘 PLEASE PLEASE PLEASE
   </h2>
 
+
   <p>
 
     <b>
+
       Please use reasonably fresh
       whole beans.
+
     </b>
 
     Put them in the hopper,
@@ -635,6 +1042,7 @@ footer {
     get properly hot before you start.
 
   </p>
+
 
   <p>
 
@@ -650,6 +1058,7 @@ footer {
 </section>
 
 
+
 <!-- ESPRESSO -->
 
 <section class="card">
@@ -658,33 +1067,51 @@ footer {
     ☕ THAT'S THAT ME ESPRESSO
   </h2>
 
+
   <ol class="steps">
 
     <li>
+
       Weigh about
-      <b>18g</b>
+
+      <b>
+        18g
+      </b>
+
       of beans/grounds.
+
     </li>
 
+
     <li>
+
       Grind into the
       double basket.
+
     </li>
 
+
     <li>
+
       Level the grounds so they're
       reasonably even.
+
     </li>
+
 
     <li>
 
       Tamp
-      <b>firmly and level</b>.
+
+      <b>
+        firmly and level
+      </b>.
 
       You do not need to
       bench-press it.
 
     </li>
+
 
     <li>
 
@@ -694,13 +1121,21 @@ footer {
 
     </li>
 
+
     <li>
 
       Stop around
-      <b>36g out</b>.
+
+      <b>
+        36g out
+      </b>.
 
       Aim for roughly
-      <b>25–30 seconds</b>
+
+      <b>
+        25–30 seconds
+      </b>
+
       as a starting point.
 
     </li>
@@ -708,6 +1143,7 @@ footer {
   </ol>
 
 </section>
+
 
 
 <!-- TROUBLESHOOTING -->
@@ -718,40 +1154,55 @@ footer {
     🚨 WHY DOES IT TASTE WEIRD?
   </h2>
 
+
   <p>
 
     <b>
+
       Shot gushes out /
       tastes thin or sour?
+
     </b>
 
     <br>
 
     → Grind
-    <b>FINER</b>.
+
+    <b>
+      FINER
+    </b>.
 
   </p>
+
 
   <p>
 
     <b>
+
       Barely drips /
       machine seems to be fighting
       for its life?
+
     </b>
 
     <br>
 
     → Grind
-    <b>COARSER</b>.
+
+    <b>
+      COARSER
+    </b>.
 
   </p>
+
 
   <p>
 
     <b>
+
       Tastes harsh, dry or
       unpleasantly bitter?
+
     </b>
 
     <br>
@@ -760,6 +1211,7 @@ footer {
     / shorter extraction.
 
   </p>
+
 
   <p>
 
@@ -778,6 +1230,7 @@ footer {
 </section>
 
 
+
 <!-- MILK -->
 
 <section class="card">
@@ -785,6 +1238,7 @@ footer {
   <h2>
     🥛 BED CHEM
   </h2>
+
 
   <ol class="steps">
 
@@ -795,12 +1249,17 @@ footer {
 
     </li>
 
+
     <li>
 
       Turn steam on and
-      <b>purge the wand first</b>.
+
+      <b>
+        purge the wand first
+      </b>.
 
     </li>
+
 
     <li>
 
@@ -808,11 +1267,15 @@ footer {
       surface and introduce a little air:
 
       think soft
-      <i>tss-tss</i>,
+
+      <i>
+        tss-tss
+      </i>,
 
       not violent jacuzzi.
 
     </li>
+
 
     <li>
 
@@ -823,19 +1286,27 @@ footer {
 
     </li>
 
+
     <li>
 
       Turn steam off
-      <b>before</b>
+
+      <b>
+        before
+      </b>
+
       removing the wand.
 
     </li>
 
+
     <li>
 
       <b>
+
         WIPE + PURGE THE WAND
         IMMEDIATELY.
+
       </b>
 
       Dried milk is your enemy.
@@ -847,6 +1318,7 @@ footer {
 </section>
 
 
+
 <!-- CLEANING -->
 
 <section class="card">
@@ -854,6 +1326,7 @@ footer {
   <h2>
     🧼 DON'T BE NASTY
   </h2>
+
 
   <p>
 
@@ -868,6 +1341,7 @@ footer {
     when it starts getting gross.
 
   </p>
+
 
   <p>
 
@@ -887,9 +1361,10 @@ footer {
 </div>
 
 
-<!-- =====================
-     YOUTUBE
-     ===================== -->
+
+<!-- ==========================================
+     🎥 YOUTUBE 🎥
+     ========================================== -->
 
 <section class="card">
 
@@ -907,25 +1382,18 @@ footer {
         ☕ Dialing in espresso
       </h3>
 
+
       <div class="video">
 
         <div class="video-placeholder">
 
           <iframe
-            width="560"
-            height="315"
             src="https://www.youtube.com/embed/d0g8umpINGQ?si=ihmcilOXhBDoDFD0"
-            title="YouTube video player"
-            frameborder="0"
+            title="Dialing in espresso tutorial"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen>
           </iframe>
-
-          <br>
-
-          <small>
-          </small>
 
         </div>
 
@@ -934,37 +1402,33 @@ footer {
     </div>
 
 
+
     <div>
 
       <h3>
         🥛 Steaming milk
       </h3>
 
+
       <div class="video">
 
         <div class="video-placeholder">
 
           <iframe
-            width="560"
-            height="315"
             src="https://www.youtube.com/embed/PwhKWLCy5HQ?si=TuBE4DhLIkus4HW_"
-            title="YouTube video player"
-            frameborder="0"
+            title="Steaming milk tutorial"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen>
           </iframe>
 
-          <br>
-
-          <small>
-            Microfoam!
-            Not bubble bath!
-          </small>
-
         </div>
 
       </div>
+
+      <small>
+        Microfoam! Not bubble bath!
+      </small>
 
     </div>
 
@@ -974,9 +1438,10 @@ footer {
 </section>
 
 
-<!-- =====================
-     ORIGINAL AD
-     ===================== -->
+
+<!-- ==========================================
+     💾 ORIGINAL AD 💾
+     ========================================== -->
 
 <section class="card adbox">
 
@@ -984,12 +1449,18 @@ footer {
     💾 HOW YOU GOT INTO THIS MESS
   </h2>
 
+
   <p>
+
     <i>
+
       Historical documentation
       from the ancient internet:
+
     </i>
+
   </p>
+
 
   <img
     src="original.png"
@@ -999,17 +1470,21 @@ footer {
 </section>
 
 
-<!-- =====================
+
+<!-- ==========================================
      EXTREMELY SERIOUS FOOTER
-     ===================== -->
+     ========================================== -->
 
 <footer>
 
   <p>
+
     ✨☕ MADE WITH LOVE,
     CAFFEINE & QUESTIONABLE
     WEB DESIGN ☕✨
+
   </p>
+
 
   <p>
 
@@ -1019,10 +1494,13 @@ footer {
       class="counter"
       id="counter"
     >
+
       00042069
+
     </span>
 
   </p>
+
 
   <p class="tiny">
 
@@ -1034,29 +1512,53 @@ footer {
 
 </footer>
 
+
 </main>
 
 
-<!-- COFFEE RAIN CONTROL -->
+
+<!-- ==========================================
+     ☕ COFFEE RAIN CONTROL ☕
+     ========================================== -->
 
 <button
   class="rain-toggle"
   id="rainToggle"
   type="button"
 >
+
   ☕ COFFEE RAIN: ON
+
 </button>
+
 
 
 <script>
 
-/* ==================================
+/* ==========================================
    ☕☕☕ INTERMITTENT COFFEE RAIN ☕☕☕
-   ================================== */
+   ========================================== */
 
 let rainOn = true;
 
 let stormTimer;
+
+
+/*
+  Detect phones/small screens.
+
+  Desktop gets the full caffeine-induced
+  weather event.
+
+  Phones get a smaller caffeine-induced
+  weather event.
+*/
+
+const mobile =
+  window.matchMedia(
+    '(max-width: 700px)'
+  );
+
 
 const icons = [
   '☕',
@@ -1073,105 +1575,253 @@ function drop() {
 
   if (!rainOn) return;
 
+
   const d =
     document.createElement('span');
 
-  d.className = 'drop';
+
+  d.className =
+    'drop';
+
 
   d.textContent =
     icons[
       Math.floor(
-        Math.random() * icons.length
+        Math.random()
+        * icons.length
       )
     ];
 
-  d.style.left =
-    Math.random() * 100 + 'vw';
 
-  d.style.fontSize =
-    (20 + Math.random() * 28)
-    + 'px';
+  d.style.left =
+    Math.random()
+    * 100
+    + 'vw';
+
+
+  /*
+    Smaller objects on iPhone.
+  */
+
+  if (mobile.matches) {
+
+    d.style.fontSize =
+      (
+        16
+        + Math.random() * 18
+      )
+      + 'px';
+
+  }
+
+  else {
+
+    d.style.fontSize =
+      (
+        20
+        + Math.random() * 28
+      )
+      + 'px';
+
+  }
+
 
   d.style.animationDuration =
-    (3 + Math.random() * 4)
+    (
+      3
+      + Math.random() * 4
+    )
     + 's';
 
-  d.style.setProperty(
-    '--drift',
-    (Math.random() * 180 - 90)
-    + 'px'
-  );
 
   d.style.setProperty(
-    '--spin',
-    (Math.random() * 720 - 360)
-    + 'deg'
+
+    '--drift',
+
+    (
+      Math.random()
+      * 180
+      - 90
+    )
+    + 'px'
+
   );
+
+
+  d.style.setProperty(
+
+    '--spin',
+
+    (
+      Math.random()
+      * 720
+      - 360
+    )
+    + 'deg'
+
+  );
+
 
   document.body.appendChild(d);
 
+
   setTimeout(
+
     () => d.remove(),
+
     7500
+
   );
 
 }
 
 
+
+/* ==========================================
+   🌧️ STORM 🌧️
+   ========================================== */
+
 function storm() {
 
   if (!rainOn) return;
 
+
   let n = 0;
+
+
+  /*
+    Desktop:
+      two objects every burst,
+      ~50 total.
+
+    Mobile:
+      one object per burst,
+      ~12 total.
+
+    Still stupid.
+    Just readable stupid.
+  */
+
+  const maxBursts =
+    mobile.matches
+      ? 11
+      : 24;
+
+
+  const dropsPerBurst =
+    mobile.matches
+      ? 1
+      : 2;
+
+
+  const burstSpeed =
+    mobile.matches
+      ? 220
+      : 120;
+
 
   const burst =
     setInterval(() => {
 
-      drop();
-      drop();
 
-      if (++n > 24) {
-        clearInterval(burst);
+      for (
+        let i = 0;
+        i < dropsPerBurst;
+        i++
+      ) {
+
+        drop();
+
       }
 
-    },120);
+
+      if (++n > maxBursts) {
+
+        clearInterval(burst);
+
+      }
+
+
+    }, burstSpeed);
+
 
   scheduleStorm();
 
 }
 
 
+
+/* ==========================================
+   ⏰ NEXT STORM
+   ========================================== */
+
 function scheduleStorm() {
 
   clearTimeout(stormTimer);
 
-  if (rainOn) {
 
-    stormTimer =
-      setTimeout(
-        storm,
-        20000
-        + Math.random() * 25000
-      );
+  if (!rainOn) return;
 
-  }
+
+  /*
+    Give mobile users more time between
+    caffeine-related weather incidents.
+  */
+
+  const minimumDelay =
+    mobile.matches
+      ? 30000
+      : 20000;
+
+
+  const randomDelay =
+    mobile.matches
+      ? 30000
+      : 25000;
+
+
+  stormTimer =
+    setTimeout(
+
+      storm,
+
+      minimumDelay
+      + Math.random()
+      * randomDelay
+
+    );
 
 }
 
 
-/* RAIN ON/OFF BUTTON */
+
+/* ==========================================
+   ☕ RAIN ON/OFF BUTTON
+   ========================================== */
 
 document
   .getElementById('rainToggle')
   .addEventListener(
+
     'click',
+
     e => {
 
-      rainOn = !rainOn;
+
+      rainOn =
+        !rainOn;
+
 
       e.currentTarget.textContent =
+
         '☕ COFFEE RAIN: '
-        + (rainOn ? 'ON' : 'OFF');
+
+        + (
+          rainOn
+            ? 'ON'
+            : 'OFF'
+        );
+
 
       if (rainOn) {
 
@@ -1181,45 +1831,78 @@ document
 
       else {
 
-        clearTimeout(stormTimer);
+        clearTimeout(
+          stormTimer
+        );
+
 
         document
-          .querySelectorAll('.drop')
+          .querySelectorAll(
+            '.drop'
+          )
           .forEach(
-            x => x.remove()
+
+            x =>
+              x.remove()
+
           );
 
       }
 
     }
+
   );
 
 
-/* First storm shortly after page load */
+
+/* ==========================================
+   ☕ FIRST STORM
+   ========================================== */
+
+/*
+  Desktop gets hit almost immediately.
+
+  iPhone gets a slightly gentler introduction.
+*/
 
 setTimeout(
+
   storm,
-  1800
+
+  mobile.matches
+    ? 3500
+    : 1800
+
 );
 
 
-/* ==================================
-   EXTREMELY SCIENTIFIC VISITOR COUNT
-   ================================== */
+
+/* ==========================================
+   🔢 EXTREMELY SCIENTIFIC VISITOR COUNT
+   ========================================== */
 
 document
   .getElementById('counter')
   .textContent =
 
     String(
+
       42069
+
       + Math.floor(
-        Math.random() * 37
+        Math.random()
+        * 37
       )
+
     )
-    .padStart(8,'0');
+
+    .padStart(
+      8,
+      '0'
+    );
 
 </script>
+
 
 </body>
 </html>
