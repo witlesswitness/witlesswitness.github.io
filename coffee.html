@@ -27,9 +27,37 @@ html {
 body {
   margin:0;
   color:var(--ink);
-  font-family:"Comic Sans MS","Comic Sans",cursive;
+
+  /* ✨ readable where it matters ✨ */
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:17px;
+  line-height:1.55;
+
   background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Ctext x='4' y='25' font-size='16'%3E%E2%9C%A8%3C/text%3E%3Ctext x='42' y='60' font-size='13'%3E%E2%98%95%3C/text%3E%3C/svg%3E") fixed;
+
   overflow-x:hidden;
+
+  /* Don't let iPhone Safari randomly resize things */
+  -webkit-text-size-adjust:100%;
+}
+
+/* ==================================================
+   ✨ COMIC SANS IS A PRIVILEGE, NOT A RIGHT ✨
+   ================================================== */
+
+h1,
+h2,
+h3,
+.bigbtn,
+.rain-toggle,
+.ticker,
+.blink {
+  font-family:"Comic Sans MS","Comic Sans",cursive;
+}
+
+p,
+li {
+  font-family:Arial, Helvetica, sans-serif;
 }
 
 a {
@@ -40,6 +68,7 @@ a {
   width:min(1000px,94vw);
   margin:auto;
 }
+
 
 /* =========================
    EXTREMELY IMPORTANT TICKER
@@ -66,6 +95,7 @@ a {
     transform:translateX(-100%);
   }
 }
+
 
 /* =========================
    HERO
@@ -114,6 +144,7 @@ a {
   }
 }
 
+
 /* =========================
    BEAUTIFUL 2002 BUTTON
    ========================= */
@@ -151,6 +182,7 @@ a {
 .tiny {
   font-size:.85rem;
 }
+
 
 /* =========================
    CARDS
@@ -191,6 +223,7 @@ a {
   margin:0 0 8px;
 }
 
+
 /* =========================
    ESPRESSO RECIPE
    ========================= */
@@ -216,7 +249,9 @@ a {
 
 .steps li {
   margin:.65em 0;
+  line-height:1.55;
 }
+
 
 /* =========================
    YOUTUBE
@@ -244,6 +279,7 @@ a {
   color:white;
 }
 
+
 /* =========================
    ORIGINAL AD
    ========================= */
@@ -257,6 +293,7 @@ a {
   height:auto;
   border:5px outset #eee;
 }
+
 
 /* =========================
    FAKE VISITOR COUNTER
@@ -272,6 +309,7 @@ a {
 
   border:3px inset #bbb;
 }
+
 
 /* =========================
    ☕ COFFEE RAIN ☕
@@ -337,6 +375,7 @@ a {
 
 }
 
+
 /* =========================
    FOOTER
    ========================= */
@@ -356,11 +395,17 @@ footer {
     5px ridge #ccc;
 }
 
+
 /* =========================
    📱 MOBILE VERSION 📱
    ========================= */
 
 @media(max-width:700px) {
+
+  body {
+    font-size:17px;
+    line-height:1.6;
+  }
 
   .grid {
     grid-template-columns:1fr;
@@ -373,11 +418,24 @@ footer {
     border-width:5px;
   }
 
+  .hero .sub {
+    line-height:1.4;
+  }
+
   .card {
     box-shadow:
       3px 3px 0 #000;
 
     padding:15px;
+  }
+
+  .card p,
+  .card li {
+    font-size:17px;
+  }
+
+  .card h2 {
+    line-height:1.15;
   }
 
   .rain-toggle {
@@ -393,7 +451,13 @@ footer {
     padding-left:24px;
   }
 
+  .tiny {
+    font-size:14px;
+    line-height:1.4;
+  }
+
 }
+
 
 /* Accessibility:
    don't assault people who have
@@ -847,11 +911,20 @@ footer {
 
         <div class="video-placeholder">
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/d0g8umpINGQ?si=ihmcilOXhBDoDFD0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/d0g8umpINGQ?si=ihmcilOXhBDoDFD0"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+
           <br>
 
           <small>
-          
           </small>
 
         </div>
@@ -870,7 +943,17 @@ footer {
       <div class="video">
 
         <div class="video-placeholder">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/PwhKWLCy5HQ?si=TuBE4DhLIkus4HW_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/PwhKWLCy5HQ?si=TuBE4DhLIkus4HW_"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
 
           <br>
 
