@@ -1,6 +1,1152 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>☕ The Barista Express Survival Guide ✨</title>
+
+<style>
+:root {
+  --pink:#ff79c9;
+  --hot:#ff2f92;
+  --blue:#7de7ff;
+  --yellow:#fff36b;
+  --purple:#c99cff;
+  --ink:#171717;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+html {
+  scroll-behavior:smooth;
+}
+
+body {
+  margin:0;
+  color:var(--ink);
+  font-family:"Comic Sans MS","Comic Sans",cursive;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Ctext x='4' y='25' font-size='16'%3E%E2%9C%A8%3C/text%3E%3Ctext x='42' y='60' font-size='13'%3E%E2%98%95%3C/text%3E%3C/svg%3E") fixed;
+  overflow-x:hidden;
+}
+
+a {
+  color:#003cff;
+}
+
+.wrap {
+  width:min(1000px,94vw);
+  margin:auto;
+}
+
+/* =========================
+   EXTREMELY IMPORTANT TICKER
+   ========================= */
+
+.ticker {
+  background:#111;
+  color:#fff700;
+  border-block:4px ridge #ddd;
+  padding:7px 0;
+  font-weight:bold;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+.ticker span {
+  display:inline-block;
+  padding-left:100%;
+  animation:marquee 18s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform:translateX(-100%);
+  }
+}
+
+/* =========================
+   HERO
+   ========================= */
+
+.hero {
+  margin:18px auto;
+  padding:clamp(16px,4vw,35px);
+  text-align:center;
+  border:7px outset var(--pink);
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffd9ef,
+      #fff88d 45%,
+      #bdefff
+    );
+
+  box-shadow:8px 8px 0 #000;
+}
+
+.hero h1 {
+  font-size:clamp(2.1rem,8vw,5rem);
+  line-height:.9;
+  margin:.15em 0;
+
+  text-shadow:
+    3px 3px #fff,
+    -2px -2px var(--pink);
+
+  transform:rotate(-1deg);
+}
+
+.hero .sub {
+  font-size:clamp(1rem,3.4vw,1.5rem);
+}
+
+.blink {
+  animation:blink .85s steps(2,end) infinite;
+}
+
+@keyframes blink {
+  50% {
+    visibility:hidden;
+  }
+}
+
+/* =========================
+   BEAUTIFUL 2002 BUTTON
+   ========================= */
+
+.bigbtn {
+  display:inline-block;
+  margin:12px;
+  padding:14px 20px;
+
+  border:5px outset #eee;
+
+  background:
+    linear-gradient(
+      #fff,
+      #ff9fda
+    );
+
+  font:
+    700 clamp(1rem,4vw,1.3rem)
+    "Comic Sans MS",
+    cursive;
+
+  color:#000;
+  text-decoration:none;
+
+  box-shadow:4px 4px #000;
+}
+
+.bigbtn:active {
+  border-style:inset;
+  transform:translate(3px,3px);
+  box-shadow:1px 1px #000;
+}
+
+.tiny {
+  font-size:.85rem;
+}
+
+/* =========================
+   CARDS
+   ========================= */
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  margin:22px auto;
+}
+
+.card {
+  padding:18px;
+  border:5px ridge #ddd;
+  background:#fff;
+  box-shadow:5px 5px 0 rgba(0,0,0,.8);
+}
+
+.card:nth-child(4n+1) {
+  background:#fff5a8;
+}
+
+.card:nth-child(4n+2) {
+  background:#ffd8ef;
+}
+
+.card:nth-child(4n+3) {
+  background:#c9f5ff;
+}
+
+.card:nth-child(4n) {
+  background:#e6d2ff;
+}
+
+.card h2 {
+  font-size:clamp(1.5rem,5vw,2.1rem);
+  margin:0 0 8px;
+}
+
+/* =========================
+   ESPRESSO RECIPE
+   ========================= */
+
+.recipe {
+  font-family:Arial,sans-serif;
+  font-weight:900;
+  text-align:center;
+
+  font-size:
+    clamp(1.15rem,4vw,1.65rem);
+
+  border:4px dashed #000;
+  padding:12px;
+  background:#fff;
+}
+
+.danger {
+  background:#fffd64;
+  border:5px double red;
+  padding:13px;
+}
+
+.steps li {
+  margin:.65em 0;
+}
+
+/* =========================
+   YOUTUBE
+   ========================= */
+
+.video {
+  aspect-ratio:16/9;
+  width:100%;
+  border:6px ridge var(--purple);
+  background:#222;
+}
+
+.video iframe {
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+.video-placeholder {
+  display:grid;
+  place-items:center;
+  text-align:center;
+  height:100%;
+  padding:20px;
+  color:white;
+}
+
+/* =========================
+   ORIGINAL AD
+   ========================= */
+
+.adbox {
+  text-align:center;
+}
+
+.adbox img {
+  max-width:100%;
+  height:auto;
+  border:5px outset #eee;
+}
+
+/* =========================
+   FAKE VISITOR COUNTER
+   ========================= */
+
+.counter {
+  font-family:"Courier New",monospace;
+  background:#000;
+  color:#39ff14;
+
+  padding:6px 10px;
+  display:inline-block;
+
+  border:3px inset #bbb;
+}
+
+/* =========================
+   ☕ COFFEE RAIN ☕
+   ========================= */
+
+.rain-toggle {
+  position:fixed;
+
+  right:max(
+    10px,
+    env(safe-area-inset-right)
+  );
+
+  bottom:max(
+    10px,
+    env(safe-area-inset-bottom)
+  );
+
+  z-index:9999;
+
+  background:#fff;
+  border:4px outset #ddd;
+
+  padding:9px 12px;
+
+  font:
+    bold 14px
+    "Comic Sans MS",
+    cursive;
+
+  box-shadow:3px 3px #000;
+}
+
+.drop {
+  position:fixed;
+  top:-60px;
+
+  z-index:9998;
+
+  pointer-events:none;
+
+  animation:
+    fall linear forwards;
+
+  filter:
+    drop-shadow(2px 2px 0 #fff);
+}
+
+@keyframes fall {
+
+  to {
+    transform:
+      translate(
+        var(--drift),
+        115vh
+      )
+      rotate(
+        var(--spin)
+      );
+
+    opacity:.95;
+  }
+
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+
+footer {
+  text-align:center;
+
+  margin:
+    30px auto 80px;
+
+  padding:18px;
+
+  background:#000;
+  color:#fff;
+
+  border:
+    5px ridge #ccc;
+}
+
+/* =========================
+   📱 MOBILE VERSION 📱
+   ========================= */
+
+@media(max-width:700px) {
+
+  .grid {
+    grid-template-columns:1fr;
+  }
+
+  .hero {
+    box-shadow:
+      4px 4px 0 #000;
+
+    border-width:5px;
+  }
+
+  .card {
+    box-shadow:
+      3px 3px 0 #000;
+
+    padding:15px;
+  }
+
+  .rain-toggle {
+    font-size:12px;
+    padding:7px 9px;
+  }
+
+  .ticker span {
+    animation-duration:12s;
+  }
+
+  .steps {
+    padding-left:24px;
+  }
+
+}
+
+/* Accessibility:
+   don't assault people who have
+   reduced motion enabled */
+
+@media(prefers-reduced-motion:reduce) {
+
+  *,
+  *:before,
+  *:after {
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+  }
+
+  .ticker span {
+    padding-left:0;
+  }
+
+}
+
+</style>
+</head>
+
 <body>
-<h1>hello world :)</h1>
+
+<!-- SCROLLING NONSENSE -->
+
+<div class="ticker">
+  <span>
+    ✨ FRESH BEANS!!!
+    ☕ FINE GRIND!!!
+    🫘 HOT GIRL ESPRESSO!!!
+    💖 PURGE YOUR STEAM WAND!!!
+    ✨ THIS AIN'T NO NESPRESSO, FOLKS!!!
+    ☕
+  </span>
+</div>
+
+
+<main class="wrap">
+
+<!-- =====================
+     HERO
+     ===================== -->
+
+<section class="hero">
+
+  <div class="blink">
+    ✨✨✨ IMPORTANT WEBSITE ✨✨✨
+  </div>
+
+  <h1>
+    HEY!!! YOU!!!
+    <br>
+    DO YOU LIKE
+    <br>
+    ESPRESSO? ☕
+  </h1>
+
+  <p class="sub">
+
+    Congratulations on your
+
+    <b>
+      BREVILLE BARISTA EXPRESS
+    </b>.
+
+    <br>
+
+    You now have a new hobby
+    whether you wanted one or not.
+
+  </p>
+
+  <a
+    class="bigbtn"
+    href="#cheat"
+  >
+    ☕ TEACH ME HOW TO ESPRESSO ☕
+  </a>
+
+  <p class="tiny">
+
+    <i>
+      Don't panic. It has approximately
+      900 controls and you're going to
+      care about, like, four of them.
+    </i>
+
+  </p>
+
+</section>
+
+
+<!-- =====================
+     ESPRESSO INSTRUCTIONS
+     ===================== -->
+
+<div
+  class="grid"
+  id="cheat"
+>
+
+
+<!-- CHEAT CODE -->
+
+<section class="card">
+
+  <h2>
+    💖 THE CHEAT CODE
+  </h2>
+
+  <div class="recipe">
+
+    18g COFFEE
+    →
+    ~36g ESPRESSO
+    →
+    ~25–30 SEC
+
+  </div>
+
+  <p>
+
+    This is your
+    <b>starting point</b>,
+    not a sacred law.
+
+    Use the double basket.
+
+    A little kitchen scale under the
+    cup makes learning approximately
+    900% less mysterious.
+
+  </p>
+
+  <div class="danger">
+
+    <b>
+      ⚠️ IMPORTANT!!!
+    </b>
+
+    <br>
+
+    Change
+    <u>one thing at a time</u>.
+
+    Usually, start by adjusting
+    the grind.
+
+  </div>
+
+</section>
+
+
+<!-- BEANS -->
+
+<section class="card">
+
+  <h2>
+    🫘 PLEASE PLEASE PLEASE
+  </h2>
+
+  <p>
+
+    <b>
+      Please use reasonably fresh
+      whole beans.
+    </b>
+
+    Put them in the hopper,
+    fill the water tank,
+    and let the machine/portafilter
+    get properly hot before you start.
+
+  </p>
+
+  <p>
+
+    For your first attempt,
+    pick a middle-ish grinder setting.
+
+    The exact number isn't magic
+    because different beans behave
+    differently.
+
+  </p>
+
+</section>
+
+
+<!-- ESPRESSO -->
+
+<section class="card">
+
+  <h2>
+    ☕ THAT'S THAT ME ESPRESSO
+  </h2>
+
+  <ol class="steps">
+
+    <li>
+      Weigh about
+      <b>18g</b>
+      of beans/grounds.
+    </li>
+
+    <li>
+      Grind into the
+      double basket.
+    </li>
+
+    <li>
+      Level the grounds so they're
+      reasonably even.
+    </li>
+
+    <li>
+
+      Tamp
+      <b>firmly and level</b>.
+
+      You do not need to
+      bench-press it.
+
+    </li>
+
+    <li>
+
+      Lock in the portafilter,
+      put your cup + scale underneath,
+      and brew.
+
+    </li>
+
+    <li>
+
+      Stop around
+      <b>36g out</b>.
+
+      Aim for roughly
+      <b>25–30 seconds</b>
+      as a starting point.
+
+    </li>
+
+  </ol>
+
+</section>
+
+
+<!-- TROUBLESHOOTING -->
+
+<section class="card">
+
+  <h2>
+    🚨 WHY DOES IT TASTE WEIRD?
+  </h2>
+
+  <p>
+
+    <b>
+      Shot gushes out /
+      tastes thin or sour?
+    </b>
+
+    <br>
+
+    → Grind
+    <b>FINER</b>.
+
+  </p>
+
+  <p>
+
+    <b>
+      Barely drips /
+      machine seems to be fighting
+      for its life?
+    </b>
+
+    <br>
+
+    → Grind
+    <b>COARSER</b>.
+
+  </p>
+
+  <p>
+
+    <b>
+      Tastes harsh, dry or
+      unpleasantly bitter?
+    </b>
+
+    <br>
+
+    → Try a slightly coarser grind
+    / shorter extraction.
+
+  </p>
+
+  <p>
+
+    <b>
+      Actually tastes good?
+    </b>
+
+    <br>
+
+    → STOP TOUCHING THINGS.
+
+    You did it. ✨
+
+  </p>
+
+</section>
+
+
+<!-- MILK -->
+
+<section class="card">
+
+  <h2>
+    🥛 BED CHEM
+  </h2>
+
+  <ol class="steps">
+
+    <li>
+
+      Pour cold milk to around
+      the bottom of the jug's spout.
+
+    </li>
+
+    <li>
+
+      Turn steam on and
+      <b>purge the wand first</b>.
+
+    </li>
+
+    <li>
+
+      Put the tip just under the
+      surface and introduce a little air:
+
+      think soft
+      <i>tss-tss</i>,
+
+      not violent jacuzzi.
+
+    </li>
+
+    <li>
+
+      Then sink the tip slightly
+      and create a whirlpool until
+      the jug is too hot to
+      comfortably hold.
+
+    </li>
+
+    <li>
+
+      Turn steam off
+      <b>before</b>
+      removing the wand.
+
+    </li>
+
+    <li>
+
+      <b>
+        WIPE + PURGE THE WAND
+        IMMEDIATELY.
+      </b>
+
+      Dried milk is your enemy.
+
+    </li>
+
+  </ol>
+
+</section>
+
+
+<!-- CLEANING -->
+
+<section class="card">
+
+  <h2>
+    🧼 DON'T BE NASTY
+  </h2>
+
+  <p>
+
+    After making coffee:
+
+    knock out the puck,
+    rinse the basket/portafilter,
+    flush a little water through
+    the group head,
+    wipe the machine,
+    and empty the drip tray
+    when it starts getting gross.
+
+  </p>
+
+  <p>
+
+    When the machine asks for
+    a cleaning cycle,
+
+    <b>
+      believe her.
+    </b>
+
+    She knows.
+
+  </p>
+
+</section>
+
+</div>
+
+
+<!-- =====================
+     YOUTUBE
+     ===================== -->
+
+<section class="card">
+
+  <h2>
+    🎥 HOT PEOPLE WATCH TUTORIALS
+  </h2>
+
+  <p>
+
+    I left video slots here so we can
+    drop in the exact YouTube tutorials
+    you want.
+
+  </p>
+
+  <div class="grid">
+
+
+    <div>
+
+      <h3>
+        ☕ Dialing in espresso
+      </h3>
+
+      <div class="video">
+
+        <div class="video-placeholder">
+
+          📼 YOUTUBE VIDEO GOES HERE
+
+          <br>
+
+          <small>
+            We'll paste the embed URL
+            into the iframe.
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <h3>
+        🥛 Steaming milk
+      </h3>
+
+      <div class="video">
+
+        <div class="video-placeholder">
+
+          📼 YOUTUBE VIDEO GOES HERE
+
+          <br>
+
+          <small>
+            Microfoam!
+            Not bubble bath!
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- =====================
+     ORIGINAL AD
+     ===================== -->
+
+<section class="card adbox">
+
+  <h2>
+    💾 HOW YOU GOT INTO THIS MESS
+  </h2>
+
+  <p>
+    <i>
+      Historical documentation
+      from the ancient internet:
+    </i>
+  </p>
+
+  <img
+    src="original-ad.png"
+    alt="The original playful Breville Barista Express advertisement"
+  >
+
+</section>
+
+
+<!-- =====================
+     EXTREMELY SERIOUS FOOTER
+     ===================== -->
+
+<footer>
+
+  <p>
+    ✨☕ MADE WITH LOVE,
+    CAFFEINE & QUESTIONABLE
+    WEB DESIGN ☕✨
+  </p>
+
+  <p>
+
+    YOU ARE VISITOR
+
+    <span
+      class="counter"
+      id="counter"
+    >
+      00042069
+    </span>
+
+  </p>
+
+  <p class="tiny">
+
+    Best viewed on a translucent
+    iMac at 800×600 while illegally
+    downloading an MP3.
+
+  </p>
+
+</footer>
+
+</main>
+
+
+<!-- COFFEE RAIN CONTROL -->
+
+<button
+  class="rain-toggle"
+  id="rainToggle"
+  type="button"
+>
+  ☕ COFFEE RAIN: ON
+</button>
+
+
+<script>
+
+/* ==================================
+   ☕☕☕ INTERMITTENT COFFEE RAIN ☕☕☕
+   ================================== */
+
+let rainOn = true;
+
+let stormTimer;
+
+const icons = [
+  '☕',
+  '☕',
+  '☕',
+  '🫘',
+  '✨',
+  '💖',
+  '🍸'
+];
+
+
+function drop() {
+
+  if (!rainOn) return;
+
+  const d =
+    document.createElement('span');
+
+  d.className = 'drop';
+
+  d.textContent =
+    icons[
+      Math.floor(
+        Math.random() * icons.length
+      )
+    ];
+
+  d.style.left =
+    Math.random() * 100 + 'vw';
+
+  d.style.fontSize =
+    (20 + Math.random() * 28)
+    + 'px';
+
+  d.style.animationDuration =
+    (3 + Math.random() * 4)
+    + 's';
+
+  d.style.setProperty(
+    '--drift',
+    (Math.random() * 180 - 90)
+    + 'px'
+  );
+
+  d.style.setProperty(
+    '--spin',
+    (Math.random() * 720 - 360)
+    + 'deg'
+  );
+
+  document.body.appendChild(d);
+
+  setTimeout(
+    () => d.remove(),
+    7500
+  );
+
+}
+
+
+function storm() {
+
+  if (!rainOn) return;
+
+  let n = 0;
+
+  const burst =
+    setInterval(() => {
+
+      drop();
+      drop();
+
+      if (++n > 24) {
+        clearInterval(burst);
+      }
+
+    },120);
+
+  scheduleStorm();
+
+}
+
+
+function scheduleStorm() {
+
+  clearTimeout(stormTimer);
+
+  if (rainOn) {
+
+    stormTimer =
+      setTimeout(
+        storm,
+        20000
+        + Math.random() * 25000
+      );
+
+  }
+
+}
+
+
+/* RAIN ON/OFF BUTTON */
+
+document
+  .getElementById('rainToggle')
+  .addEventListener(
+    'click',
+    e => {
+
+      rainOn = !rainOn;
+
+      e.currentTarget.textContent =
+        '☕ COFFEE RAIN: '
+        + (rainOn ? 'ON' : 'OFF');
+
+      if (rainOn) {
+
+        storm();
+
+      }
+
+      else {
+
+        clearTimeout(stormTimer);
+
+        document
+          .querySelectorAll('.drop')
+          .forEach(
+            x => x.remove()
+          );
+
+      }
+
+    }
+  );
+
+
+/* First storm shortly after page load */
+
+setTimeout(
+  storm,
+  1800
+);
+
+
+/* ==================================
+   EXTREMELY SCIENTIFIC VISITOR COUNT
+   ================================== */
+
+document
+  .getElementById('counter')
+  .textContent =
+
+    String(
+      42069
+      + Math.floor(
+        Math.random() * 37
+      )
+    )
+    .padStart(8,'0');
+
+</script>
+
 </body>
 </html>
