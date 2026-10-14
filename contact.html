@@ -121,7 +121,17 @@
     font-size: .92rem;
     transition: color 180ms ease;
   }
-  .back:hover { color: var(--accent); }
+  .back:hover, .linkedin:hover { color: var(--accent); }
+  .linkedin {
+    display: inline-block;
+    width: fit-content;
+    margin: -1rem 0 2rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: .92rem;
+    transition: color 180ms ease;
+  }
+  .linkedin:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
   .arrow { font-size: 1.15rem; }
   @media (max-width: 420px) {
     main { width: calc(100% - 2.5rem); }
@@ -138,6 +148,7 @@
   <p class="eyebrow">Personal website <span aria-hidden="true">/</span> 03</p>
   <h1>Get in<br><span>touch.</span></h1>
   <p class="intro">Have a question, an idea, or something worth discussing? Send me a note.</p>
+  <a class="linkedin" href="https://www.linkedin.com/in/charles-timmons" target="_blank" rel="noopener noreferrer">Or find me on LinkedIn ↗</a>
   <form action="https://formspree.io/f/mpzolqwl" method="POST">
     <label class="field">
       <span class="field-label">Your email address</span>
