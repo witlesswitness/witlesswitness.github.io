@@ -1,89 +1,119 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <title>Charles Timmons</title>
-    
-    <link href="style.css" rel="stylesheet" type="text/css" />
-
-    <style>
-      @import url('https://fonts.googleapis.com/css?family=Advent+Pro:100');
-
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      }
-
-      html { 
-        background: url('https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif')
-          no-repeat center center fixed;
-        background-size: cover;
-      }
-
-      h1 {
-        font-family: 'Advent Pro', sans-serif;
-        font-size: 3em;
-        margin: .2em .5em;
-        color: rgba(0,0,0,0.3);
-      }
-
-      /* ☕ THE SECRET COFFEE PORTAL ☕ */
-
-      .coffee-portal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-
-        transform: translate(-50%, -50%);
-
-        font-size: clamp(70px, 12vw, 120px);
-        text-decoration: none;
-
-        cursor: pointer;
-
-        filter: drop-shadow(0 5px 8px rgba(0,0,0,.35));
-
-        transition:
-          transform .2s ease,
-          filter .2s ease;
-      }
-
-      .coffee-portal:hover {
-        transform:
-          translate(-50%, -50%)
-          scale(1.2)
-          rotate(-8deg);
-
-        filter:
-          drop-shadow(0 10px 12px rgba(0,0,0,.45));
-      }
-
-      .coffee-portal:active {
-        transform:
-          translate(-50%, -50%)
-          scale(.9);
-      }
-    </style>
-  </head>
-
-  <body>
-
-    <!-- ☕ ENTER THE ESPRESSO ZONE ☕ -->
-
-    <a
-      class="coffee-portal"
-      href="https://charlestimmons.com/coffee"
-      aria-label="Enter the espresso page"
-      title="☕ ???"
-    >
-      ☕
-    </a>
-
-    <script src="script.js"></script>
-
-  </body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Charles Timmons is a Seattle-based cybersecurity practitioner exploring education, ethics, and safety in today's and tomorrow's technologies. Read his writing or get in touch.">
+<title>Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    min-height: 100vh;
+    width: min(100% - 3rem, 690px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: clamp(4rem, 12vh, 9rem);
+  }
+  .eyebrow {
+    margin: 0 0 2.4rem;
+    color: var(--muted);
+    font: 500 .7rem/1.4 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 0 0 clamp(2.5rem, 7vh, 4.5rem);
+    font-size: clamp(3.7rem, 11vw, 7.4rem);
+    font-weight: 450;
+    letter-spacing: -.055em;
+    line-height: .92;
+  }
+  h1 span { color: var(--accent); }
+  nav { border-top: 1px solid var(--line); }
+  nav a {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 4.3rem;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr 1.5rem;
+    align-items: center;
+    gap: .75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--fg);
+    text-decoration: none;
+    transition: color 220ms ease, padding 220ms ease;
+  }
+  nav a::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 20%, color-mix(in srgb, var(--accent) 13%, transparent) 45%, color-mix(in srgb, var(--accent) 28%, transparent) 50%, color-mix(in srgb, var(--accent) 13%, transparent) 55%, transparent 80%);
+    transform: translateX(-120%);
+    transition: transform 650ms cubic-bezier(.2,.7,.2,1);
+    pointer-events: none;
+  }
+  .num {
+    color: var(--muted);
+    font: 500 .72rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: .04em;
+  }
+  .label { font-size: clamp(1.08rem, 3vw, 1.25rem); letter-spacing: -.025em; }
+  .arrow {
+    justify-self: end;
+    color: var(--accent);
+    font-size: 1.2rem;
+    opacity: .75;
+    transform: translate(-2px, 2px);
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+  nav a:hover { color: var(--accent); padding-inline: .35rem; }
+  nav a:hover::before, nav a:focus-visible::before { transform: translateX(120%); }
+  nav a:hover .arrow { opacity: 1; transform: translate(0, 0); }
+  nav a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  }
+  @media (max-width: 420px) {
+    main { width: calc(100% - 2.5rem); }
+    .eyebrow { margin-bottom: 2rem; }
+    nav a { min-height: 4rem; grid-template-columns: 2rem 1fr 1.25rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Personal website <span aria-hidden="true">/</span> 01</p>
+  <h1>Charles<br>Timmons</h1>
+  <nav aria-label="Main navigation">
+    <a href="/about"><span class="num">01</span><span class="label">About me</span><span class="arrow" aria-hidden="true">↗</span></a>
+    <a href="/writings"><span class="num">02</span><span class="label">Writings</span><span class="arrow" aria-hidden="true">↗</span></a>
+    <a href="/contact"><span class="num">03</span><span class="label">Contact</span><span class="arrow" aria-hidden="true">↗</span></a>
+    <a href="/coffee"><span class="num">04</span><span class="label">Coffee</span><span class="arrow" aria-hidden="true">↗</span></a>
+    <a href="https://www.chess.com/member/reydeloscuadros" target="_blank" rel="noopener noreferrer"><span class="num">05</span><span class="label">Challenge me to a chess game</span><span class="arrow" aria-hidden="true">↗</span></a>
+  </nav>
+</main>
+</body>
 </html>
