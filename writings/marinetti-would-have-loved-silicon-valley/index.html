@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A work-in-progress essay by Charles Timmons on Futurism, artificial intelligence, and the case for building carefully.">
+<title>Marinetti Would Have Loved Silicon Valley — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 3rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 15ch; margin: 0; font-size: clamp(2.8rem, 8.5vw, 5.7rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 35rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.45rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.8rem, 4.5vw, 2.4rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose blockquote { margin: 2rem 0; padding: .25rem 0 .25rem 1.25rem; border-left: 2px solid var(--accent); font-size: 1.25em; line-height: 1.55; }
+  .prose blockquote p { margin: 0; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--line); }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .draft-note { margin: 3rem 0 0; padding: 1rem 1.1rem; border: 1px solid var(--line); color: var(--muted); font-size: .85rem; line-height: 1.65; }
+  footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 10rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/writings/">Charles Timmons / Writings</a></p>
+    <span class="status">Working draft · Not published</span>
+  </div>
+  <header>
+    <h1>Marinetti Would Have Loved Silicon Valley</h1>
+    <p class="deck">Futurism, Artificial Intelligence, and the Case for Building Carefully</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">·</span> <time datetime="2026-10">October 2026</time></p>
+  </header>
+  <article class="prose">
+    <p>The scene is Paris, late winter, 1909. You approach your usual news stand to pick up some Saturday morning reading, the scent of the smoky <em>salon</em> from last night lingering on your clothes and hair. After grabbing a newspaper, you walk a short block towards your usual café. The iron latticework of the Eiffel Tower, a temporary exhibit from the 1889 <em>Exposition Universelle</em> that would become a permanent monument to industry and progress, peeks over the surrounding buildings as you take refuge from the damp, chilly morning.</p>
+    <p>Now, seated at your usual spot, <em>café au lait</em> in front of you, you begin to read.</p>
+    <hr>
+    <h2>The Human, the Machine, and the Manifesto</h2>
+    <blockquote><p>“We already live in the absolute, because we have created eternal, omnipresent speed.” <span aria-label="attributed to">—</span> F. T. Marinetti</p></blockquote>
+    <p>Italian poet Filippo Tommaso Marinetti's <a href="https://designmanifestos.org/f-t-marinetti-manifesto-of-futurism/"><em>Manifesto of Futurism</em></a> appeared on the front page of the French conservative paper <em>Le Figaro</em> on February 20, 1909, two weeks <a href="https://en.wikipedia.org/wiki/Manifesto_of_Futurism">after it first ran in Bologna's <em>Gazzetta dell'Emilia</em></a> on February 5. This was the official product launch of his movement enamored with speed, machines, and a romanticized notion of violence, calling to purge society of the burdens of the past and dive headfirst into both a physical and metaphysical electrified future. Marinetti declared that his movement aimed to usher in a new era of industrial might, innovation, and raw will-power, ending his work with the audacious declaration, “once again we hurl defiance to the stars!”</p>
+    <p>In the 2020s, we find ourselves at the dawn of another machine age, manifestos included.</p>
+    <p>Marc Andreessen cofounded Netscape, the web browser company that helped launch the 1990s internet boom, and later the venture firm Andreessen Horowitz. In October 2023, he published <a href="https://a16z.com/the-techno-optimist-manifesto/"><em>The Techno-Optimist Manifesto</em></a>. In the spirit of a true manifesto, its first section opens with the combative and decisive words “We are being lied to.”</p>
+    <p>In Andreessen’s telling, skeptics claim technology costs jobs, damages the environment, and frays the social fabric, and the upshot is that we are “told to be miserable about the future.” He presents human progress as an endless upward spiral of increased productivity, higher well-being, and growth of all that is good.</p>
+    <p>In his manifesto, Andreessen exalts the accomplishments of capital markets paired with technology, “despite continuous howling from Communists and Luddites.” In the world of the Techno-Optimist, technology and innovation will be governed by “market discipline.” Let individuals pursue innovation and profit, he argues, and the collective benefits.</p>
+    <p>In the <em>Manifesto of Futurism</em>, Marinetti vows to “fight moralism, ... every opportunistic or utilitarian cowardice.” Andreessen, for his part, devotes a section of his manifesto to “The Enemy.” He describes a six-decade “mass demoralization campaign” against technology, one that has traveled under names like existential risk, sustainability, ESG, sustainable development goals, social responsibility, stakeholder capitalism, the Precautionary Principle, trust and safety, tech ethics, risk management, de-growth, and the limits of growth. A mix of safety and corporate-responsibility vocabulary, in other words, all of it resting, he argues, on “bad ideas of the past—zombie ideas, many derived from Communism.” Unlike Marinetti, who glorified war as “the world’s only hygiene,” Andreessen insists his enemies are bad ideas, not bad people. His language, though, remains martial: the Precautionary Principle, he writes, must be jettisoned “with extreme prejudice.”</p>
+    <p>In the Intelligence section, that martial register meets a moral claim. Andreessen frames slowing AI as a moral failing: “We believe any deceleration of AI will cost lives. Deaths that were preventable by the AI that was prevented from existing is a form of murder.” His manifesto never asks whether deaths caused by hastily deployed AI can also be considered murder.</p>
+    <p>Instead of endnotes or a citations section, Andreessen lists the “Patron Saints of Techno-Optimism.” In his words, “read the work of these people, and you too will become a Techno-Optimist.” Among the names Adam Smith, Friedrich Nietzsche, and Rose Wilder Lane sits the name Filippo Tommaso Marinetti.</p>
+    <p>The Patron Saints list isn’t the only suggestion of Marinetti's intellectual legacy in Andreessen's manifesto, although Andreessen doesn't name Marinetti directly. Under the heading “Becoming Technological Supermen,” Andreessen introduces a line as a paraphrase of “a manifesto of a different time and place”: “Technology must be a violent assault on the forces of the unknown, to force them to bow before man.” Set it beside the seventh point of Marinetti’s manifesto, “Poetry must be conceived as a violent attack on unknown forces, to reduce and prostrate them before man,” and, allowing for translation differences, the only real change is the subject. Poetry is exchanged for technology.</p>
+    <p>Who is speaking matters as much as what is said. Marinetti was a poet with a flair for publicity. His manifesto reached a wide audience, but what he commanded was attention, not infrastructure. Andreessen and other leaders in the AI sphere lead firms with enormous capital and have a real hearing in the halls of power. A poet’s provocation and a billionaire’s can be equally bold, but only one of them can build its own prophecy.</p>
+    <p>Sam Altman is the current face of OpenAI, the company behind the wildly popular ChatGPT. Altman is chief executive of a corporation that Bloomberg News reported in late September 2026, and Reuters relayed, <a href="https://www.reuters.com/legal/transactional/openai-targets-30-billion-funding-14-trillion-valuation-bloomberg-news-reports-2026-09-29/">is seeking at least $30 billion at a valuation of about $1.4 trillion</a>. Altman is also becoming a familiar face on Capitol Hill and in the White House. <a href="https://www.npr.org/2026/09/25/g-s1-144973/trump-state-dinner-xi">On September 24</a> he attended President Donald Trump's state dinner for Chinese President Xi Jinping and in <a href="https://www.politico.com/news/2026/06/02/sam-altman-white-house-hill-meetings-00947237">June 2026</a> he attended various meetings with members of Congress and high-ranking federal officials.</p>
+    <p>On September 23, 2024, Altman published <a href="https://ia.samaltman.com/"><em>The Intelligence Age</em></a>, adding his essay to the stack of what some would call <a href="https://www.bbc.com/news/articles/cz97ljy91zxo">AI manifestos</a>. At roughly a fifth the length of <em>The Techno-Optimist Manifesto</em>, it is plainer and calmer in tone, and I find it reassuring that one of the most influential people in tech does not include a list of “enemies.”</p>
+    <p>Set against the fiery rhetoric of Marinetti and Andreessen, I hesitate to call it a manifesto at all. Its optimism is close to what you would hear from many AI company leaders, and its opening line, “In the next couple of decades, we will be able to do things that would have seemed like magic to our grandparents,” could have come from anyone with “AI” somewhere in their job description. That may be the point, because the calm voice is doing real work. The claims underneath it are not small. Altman writes that superintelligence could arrive in “a few thousand days,” and he predicts that fixing the climate, establishing a space colony, and discovering all of physics will eventually become commonplace.</p>
+    <p>He also declines to describe this future in detail: “I believe the future is going to be so bright that no one can do it justice by trying to write about it now; a defining characteristic of the Intelligence Age will be massive prosperity.” The rosy promise comes with a concession. He pairs the promise that “we can have shared prosperity to a degree that seems unimaginable today” with a nod to risks such as disruption in labor markets. He says the story will not be entirely positive, “but the upside is so tremendous that we owe it to ourselves, and the future, to figure out how to navigate the risks in front of us.” Today Altman leads a company balancing investor expectations, <a href="https://openai.com/index/our-agreement-with-the-department-of-war/">its work with the U.S. defense establishment</a>, and the perception of the general public. A CEO with investors, regulators, and the public to answer to has reason to pair promise with caution.</p>
+    <p>Whereas Andreessen's manifesto reads like a supervillain's monologue (or a superhero's, depending on your conviction) and Altman's reads like a rosy, yet carefully hedged, press release, <a href="https://darioamodei.com/essay/machines-of-loving-grace"><em>Machines of Loving Grace</em></a>, published in October 2024 by Anthropic CEO Dario Amodei, blends romanticized predictions for an AI-defined future, the author's personal views and admitted limitations, and words of caution. The thesis of his essay is neatly summed up in the opening paragraph: “<strong>I think that most people are underestimating just how radical the upside of AI could be</strong>, just as I think most people are underestimating how bad the risks could be” (emphasis in original).</p>
+    <p>The 1967 poem by Richard Brautigan from which Amodei borrowed the title of his essay, “<a href="https://allpoetry.com/All-Watched-Over-By-Machines-Of-Loving-Grace">All Watched Over by Machines of Loving Grace</a>,” is a brief trio of stanzas describing the poet's fantasy of a world in which computer technology has restored the balance between humanity and the natural world. The “machines of loving grace” watch over a post-labor world in which humans are free to live in harmony with “our mammal brothers and sisters.” There is a quiet irony in borrowing this poem’s title: in his introduction, Amodei says he wants to avoid “perception of propaganda,” “grandiosity,” and “‘sci-fi’ baggage” when discussing the upside of AI, yet the title comes from a poet’s utopian vision.</p>
+    <p>After outlining the “Basic assumptions and framework,” Amodei's predictions for the positive impact that AI will bring humanity are broken down into five sections including health, governance, and the economy. Amodei makes it clear that his “predictions are going to be radical as judged by most standards (other than sci-fi 'singularity' visions), but I mean them earnestly and sincerely.” A footnote adds that the pace he describes is probably close to the limits of what society can absorb without extreme turbulence. Yet, he also admits “I am sure I will get plenty of things wrong.” One “radical” prediction from the first section, “Biology and health,” is that, if everything goes right, we may be able to double the human lifespan and eliminate most cancers once powerful AI has been developed. What’s more ambitious is his suggestion that these advances, along with feats like lifting billions of people out of poverty (he calls the underlying growth target a “dream scenario”), could arrive within five to ten years of powerful AI’s arrival.</p>
+    <p>Notably, <em>Machines of Loving Grace</em> often stresses the need to mitigate risks. In the essay, Amodei states that he's “tried to lay out a vision of a world that is both plausible <em>if</em> everything goes right with AI, and much better than the world today.” As CEO of <a href="https://www.anthropic.com/company">Anthropic</a>, he oversees an organization that primarily describes itself as an “AI safety and research company,” so it's no wonder that risk is a recurring theme in the text. That said, Amodei does highlight the importance for democracies to maintain “the upper hand on the world stage when powerful AI is created,” proposing what he calls an “entente strategy”: a plan for democracies to secure their supply chains, scale quickly, and restrict adversaries’ access to chips.</p>
+    <p>My takeaway from <em>Machines of Loving Grace</em> is that great things are possible with AI, but only if competitive pressure and the need for speed are weighed against the risks of careless haste. The responsibility of securing the benefits of AI while keeping the public good in mind will need to be shared by both governments and private companies, in addition to individual citizens.</p>
+    <h2>The Car, the Crash, and the Crash Test</h2>
+    <p><em>[Draft continues here.]</em></p>
+  </article>
+  <p class="draft-note"><strong>Working draft:</strong> This page is being developed and is not ready for publication. The essay text currently stops at the start of “The Car, the Crash, and the Crash Test.”</p>
+  <footer><a class="back" href="/writings/">← All writings</a></footer>
+</main>
+</body>
+</html>
