@@ -51,7 +51,10 @@
   .prose hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--line); }
   .prose em { font-style: italic; }
   .prose strong { font-weight: 700; }
-  footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  .reply { max-width: 42rem; margin: 3.5rem auto 0; padding-top: 1.75rem; border-top: 1px solid var(--line); font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); color: var(--muted); }
+  .reply a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .reply a:hover { text-decoration-thickness: 2px; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
   a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
   @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 10rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -138,6 +141,7 @@
     <p>The scene is Seattle, early spring, 2029. Seated at a table on the balcony of your apartment, you blow gently on your coffee. The Space Needle, constructed for the 1962 World's Fair, slowly emerges as the sun burns through the morning fog. As you ponder whether the attendees of the long-ago World's Fair believed that humans would be living on Mars by now, a dull hum interrupts your thoughts. A drone hovers on the other side of the railing. The small camera in front appears to be studying you, but you know it's simply scanning the QR code on your window to confirm the delivery zone. It gently places a package on the table in front of you, and after a soft two-tone chime it buzzes away.</p>
     <p>The fog lifts. The books you ordered can wait; for now, you watch the Needle come into view.</p>
   </article>
+  <p class="reply">Thoughts on the essay? <a href="/contact.html">Send me a note →</a></p>
   <footer><a class="back" href="/writings/">← All writings</a></footer>
 </main>
 </body>
