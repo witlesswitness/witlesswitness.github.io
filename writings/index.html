@@ -22,6 +22,8 @@
   main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: clamp(3rem, 9vh, 6.5rem) 0 4rem; }
   .eyebrow, .meta, .num, .back { font: 500 .7rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .13em; text-transform: uppercase; }
   .eyebrow { color: var(--muted); margin: 0 0 3rem; }
+  .eyebrow a { color: inherit; text-decoration: none; }
+  .eyebrow a:hover, .eyebrow a:focus-visible { color: var(--accent); }
   h1 { margin: 0; font-size: clamp(3rem, 10vw, 6rem); font-weight: 450; letter-spacing: -.055em; line-height: .96; }
   h1 span { color: var(--accent); }
   .intro { max-width: 34rem; margin: 1.5rem 0 3.5rem; color: var(--muted); font-size: clamp(1.05rem, 2.8vw, 1.2rem); line-height: 1.7; }
@@ -49,7 +51,7 @@
 </head>
 <body>
 <main>
-  <p class="eyebrow">Charles Timmons <span aria-hidden="true">/</span> Writings <span aria-hidden="true">/</span> 01</p>
+  <p class="eyebrow"><a href="/">Charles Timmons</a> <span aria-hidden="true">/</span> Writings <span aria-hidden="true">/</span> 01</p>
   <h1>Writings</h1>
   <p class="intro">Essays on technology, security, ethics, and the responsibilities that come with building the future.</p>
   <p class="section-label">Essays <span aria-hidden="true">/</span> 01—∞</p>
