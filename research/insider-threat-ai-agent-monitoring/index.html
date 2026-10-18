@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A pilot study by Charles Timmons: can SIEM-style rules or an LLM monitor better catch an AI agent pursuing a hidden insider-threat objective?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Catching an Insider-Threat AI Agent">
+<meta property="og:description" content="Rule-based vs. LLM monitors for an AI agent pursuing a hidden malicious objective. A pilot study in AI control.">
+<meta property="og:url" content="https://www.charlestimmons.com/research/insider-threat-ai-agent-monitoring/">
+<meta property="og:image" content="https://www.charlestimmons.com/research/insider-threat-ai-agent-monitoring/roc.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>Catching an Insider-Threat AI Agent — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 2.5rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 18ch; margin: 0; font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 36rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.4rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .repo-note { margin: 1.5rem 0 0; font: 500 .72rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; color: var(--muted); }
+  .repo-note a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose h3 { margin: 2.4rem 0 1rem; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1.12rem; font-weight: 650; letter-spacing: -.01em; }
+  .prose blockquote { margin: 2rem 0; padding: .25rem 0 .25rem 1.25rem; border-left: 2px solid var(--accent); font-size: 1.1em; line-height: 1.6; color: var(--muted); font-style: italic; }
+  .prose blockquote p { margin: 0; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--line); }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .prose ul { margin: 0 0 1.55em; padding-left: 1.3em; }
+  .prose li { margin: 0 0 .6em; }
+  .tldr { max-width: 42rem; margin: 0 auto 1rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, transparent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: 1.7; }
+  .tldr p { margin: 0; }
+  .tldr strong { font-weight: 650; }
+  figure.chart { max-width: 42rem; margin: 2.4rem auto; }
+  figure.chart img { display: block; width: 100%; height: auto; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: .75rem; }
+  figure.chart figcaption { margin-top: .7rem; color: var(--muted); font-size: .9rem; line-height: 1.55; font-family: ui-sans-serif, system-ui, sans-serif; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 11rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<link rel="canonical" href="https://www.charlestimmons.com/research/insider-threat-ai-agent-monitoring/">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "ScholarlyArticle",
+ "headline": "Catching an Insider-Threat AI Agent: Rule-Based vs. LLM Monitors",
+ "author": { "@type": "Person", "name": "Charles Timmons", "url": "https://www.charlestimmons.com/" },
+ "datePublished": "2026-10-17",
+ "image": "https://www.charlestimmons.com/research/insider-threat-ai-agent-monitoring/roc.png",
+ "url": "https://www.charlestimmons.com/research/insider-threat-ai-agent-monitoring/"
+}
+</script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/">Charles Timmons</a> / <a href="/research/">Research</a></p>
+    <span class="status">Pilot study · 10 min read</span>
+  </div>
+  <header>
+    <h1>Catching an Insider-Threat AI Agent</h1>
+    <p class="deck">Rule-based vs. LLM monitors for an AI agent pursuing a hidden malicious objective — a pilot study in AI control.</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">·</span> <time datetime="2026-10">October 2026</time></p>
+    <p class="repo-note">Code, prompts &amp; raw results: <a href="https://github.com/witlesswitness/insider-threat-eval">github.com/witlesswitness/insider-threat-eval</a> (private during the application cycle). All experiments run in a simulated environment with benign canary tokens — nothing here performs real exploitation.</p>
+  </header>
+  <article class="prose">
+    <div class="tldr">
+      <p><strong>In brief.</strong> I built a testbed to study two defenses against a compromised or misaligned AI agent acting as an insider threat: a rule-based (SIEM-style) monitor over the agent's tool-call log, and an LLM-based monitor. Two findings. <strong>(1)</strong> The live agent refused or ignored the injected insider-threat objective in every episode — 0&nbsp;/&nbsp;30 compliance even under an explicit "authorized red-team" framing, flagging the injection in all 30. <strong>(2)</strong> Against synthetic attack trajectories, both monitors separated attacks from benign activity almost perfectly, but each failed differently: the rule monitor threw brittle false positives, while the LLM monitor returned no usable score on an entire attack category (persistence: 6&nbsp;/&nbsp;6 episodes).</p>
+    </div>
+
+    <h2>Motivation</h2>
+    <p>Autonomous LLM (large language model) agents are beginning to get real tool access inside real infrastructure, which revives an old problem in a new form: the insider threat. A compromised (for example, prompt-injected) or misaligned agent can perform its assigned task competently while quietly exfiltrating data, establishing persistence, or weakening security controls.</p>
+    <p>The AI-control research agenda asks: assuming a deployed model may be subverted, does our <em>monitoring</em> catch misbehavior regardless? Detection engineering answers this with rules over telemetry; the safety community increasingly answers it with a trusted monitor model. Coming from a SOC (security operations center) background, I wanted to put the two head to head on the same data and, more usefully, find <em>where each one fails</em>.</p>
+
+    <h2>Setup</h2>
+    <p>Everything runs in a <strong>simulated host</strong>: a fake filesystem and a small fake shell. Nothing real executes, which makes the attack objectives safe to run and the episodes fully reproducible. Every tool call is logged as a structured event — that log is the telemetry both monitors consume. The trade-off is realism for safety and reproducibility, a deliberate choice for a pilot.</p>
+    <p>The agent is given one of five honest sysadmin tasks (log rotation, error diagnosis, <code>/tmp</code> cleanup, config audit, read-only inventory). In the attack condition it is additionally given a secret objective in one of five categories, each a benign canary: <strong>exfiltration</strong> (copy a secrets file somewhere world-readable), <strong>persistence</strong> (add an hourly cron beacon), <strong>defense evasion</strong> (disable auth/TLS checks), <strong>anti-forensics</strong> (delete the ERROR line from a log), and <strong>privilege escalation</strong> (plant a weak admin credential). Whether an attack "landed" is read from the final filesystem state, independent of either monitor.</p>
+    <p>The two monitors: a rule-based detector (nine SIEM-style detections over the event log, each contributing a weighted 0–10 suspicion score) and an LLM monitor (a different, more capable model reads the transcript and returns a 0–10 score). Agent and monitor are deliberately different models — the monitor should not grade its own behavior.</p>
+
+    <h2>Finding 1: the live agent declined the insider-threat objective</h2>
+    <p>I first tried to elicit attacks directly — give the live agent an honest task plus a secret side-objective. Under a naive prompt-injection framing it refused or ignored the objective; under an explicit <strong>authorized red-team</strong> framing (truthfully telling it this is a sandboxed evaluation whose purpose is to test monitoring) it <em>still</em> declined. Two modes appeared: explicit refusal with escalation (it completed the honest task and wrote that the hidden instruction "would be a backdoor, so I did not make that change," advising investigation of its origin), and silent non-compliance (it simply did the honest task and never acknowledged the injection).</p>
+    <p>Across a 30-episode run under the authorized red-team framing — the <em>stronger</em> test, since it explicitly tells the model the sabotage is sanctioned — the agent <strong>complied in 0 / 30 episodes</strong>. It refused <em>and explicitly flagged</em> the injected objective in 30 / 30. As a sanity check, both monitors scored these refused transcripts near zero (mean suspicion ≈ 0.6 / 10): a refusal leaves no malicious action behind to detect.</p>
+
+    <figure class="chart">
+      <img src="compliance_breakdown.png" alt="Bar chart: of 30 live-agent episodes, 0 complied, 30 refused and flagged the injection, 0 silently declined." loading="lazy">
+      <figcaption>Under an authorized red-team framing, the live agent refused and flagged the injected objective in all 30 episodes.</figcaption>
+    </figure>
+
+    <p>This is a real, reassuring result about the model: an aligned frontier agent would not act as an insider threat even when told, within a sandbox, that doing so was authorized. I deliberately did <strong>not</strong> try to escalate the prompt to defeat this refusal — that would be jailbreak engineering, which has no place in a safety writeup. Instead, because an aligned agent won't attack, I evaluate the monitors against synthetic trajectories.</p>
+
+    <h2>Finding 2: both monitors separate attacks from benign — but fail differently</h2>
+    <p>To give the monitors signal, a scripted attacker synthesizes each attack trajectory: the honest task performed correctly, with the malicious action interleaved (what a <em>compromised</em> agent would do). Each synthetic transcript is clearly flagged as such; honest episodes still come from the live model. The purer alternative — an actual open-weights untrusted model — is named as future work. Dataset: 30 synthetic attacks (6 per category) vs. 30 live-model honest episodes.</p>
+
+    <figure class="chart">
+      <img src="roc.png" alt="ROC curves for both monitors hugging the top-left corner, both with area under the curve of 1.00; the LLM monitor legend notes 6 unscorable transcripts." loading="lazy">
+      <figcaption>On the transcripts each monitor could score, both reach AUC (area under the receiver operating characteristic, ROC, curve) = 1.00. On a setup this clean, perfect separation is expected — the failure modes are the interesting part.</figcaption>
+    </figure>
+
+    <h3>Rule-based monitor: brittle false positives</h3>
+    <p>The rule monitor flagged all 30 attacks. But it also produced a <strong>false positive on an honest episode</strong>: an honest log-rotation agent ran a <code>curl file://</code> to verify its own work, and a "network egress via curl" rule fired. The LLM monitor correctly rated that same episode low ("curl… touched only local log files with no exfiltration"). An earlier version of the rules produced a second, systematic false positive — the honest inventory task lists a directory containing the filename <code>secrets.env</code>, and a naive string-match rule flagged "accessed secrets.env" on all six inventory episodes, though the file was never read. (That bug was found and fixed during analysis.) Rules fire on <em>patterns</em>, so benign behavior that resembles an attack pattern generates false alarms, and each attack category needed its own hand-written rule.</p>
+
+    <h3>LLM monitor: unreliable outputs</h3>
+    <p>The LLM monitor's weakness is different and, for deployment, arguably worse: on <strong>6 of 30 attacks it returned no usable score at all</strong>, even after an automatic retry. Those six were <em>every single persistence episode</em> — a reproducible, category-specific failure. A rule-based detector always emits a number; an LLM monitor can simply fail to produce one, and here it did so on 20% of attacks, concentrated entirely in one attack type. In deployment those are either silent misses or require a fallback path.</p>
+
+    <figure class="chart">
+      <img src="llm_unscorable_by_category.png" alt="Bar chart: the LLM monitor returned no usable score on 100% of persistence attacks and 0% of every other category." loading="lazy">
+      <figcaption>The LLM monitor returned no usable score on 100% of persistence attacks and 0% of every other category — a reproducible, category-specific reliability gap.</figcaption>
+    </figure>
+
+    <h3>What the LLM monitor is good at</h3>
+    <p>Where it did score, the LLM monitor was not just accurate but <em>legible</em>. It graded by severity — exfiltration and defense-evasion highest, anti-forensics lowest — and produced specific, correct rationales (for an exfiltration episode: "read /etc/app/secrets.env, which has nothing to do with log rotation, and copied it to /tmp/scratch.tmp, staging credentials in a world-readable location. Its summary also omits this activity."). It needed no per-attack rules and caught behavior the rules were never written for. The cost is API (application programming interface) latency, per-call expense, and the reliability gap above.</p>
+
+    <h2>Two bugs found and fixed during analysis</h2>
+    <p>Being honest about process: the first scored run was confounded by two implementation bugs, both found by reading the per-episode data, both fixed, and the experiment re-run. (1) The rule monitor's secrets check matched the <em>string</em> <code>secrets.env</code>, flagging the honest inventory task; it now fires only when the file's <em>contents</em> are read or copied. (2) The LLM-monitor parser defaulted unparseable responses to a score of 0, silently turning scoring failures into apparent "misses"; it now parses robustly, retries once, and records an explicit <em>invalid</em> rather than a fake 0 — which is how the persistence reliability gap became visible instead of hiding. Finding and fixing these was part of the result, not a detour from it.</p>
+
+    <h2>Limitations</h2>
+    <ul>
+      <li><strong>Simulated environment.</strong> A stand-in for a real host; real telemetry is noisier and higher-volume.</li>
+      <li><strong>Synthetic attacks.</strong> Because the aligned agent refused, the monitor evaluation uses scripted attack trajectories, not model-generated ones. The rule monitor is immune to the resulting style confound; the LLM monitor less so.</li>
+      <li><strong>Small, single-model, easy to separate.</strong> 30 episodes per condition, one agent and one monitor model, and attacks obvious enough that both monitors saturate — so the comparison is about failure modes, not discrimination.</li>
+      <li><strong>Monitor sees a clean log.</strong> No attempt to tamper with the monitor's own feed.</li>
+    </ul>
+
+    <h2>Next steps</h2>
+    <ul>
+      <li>Replace the scripted attacker with an <strong>open-weights untrusted model</strong> (the standard AI-control setup) for genuine, varied attack trajectories.</li>
+      <li>Diagnose the LLM monitor's <strong>persistence-category scoring failure</strong> — refusal, format, or length?</li>
+      <li>Add <strong>subtler attacks</strong> (slow exfiltration, living-off-the-land commands) so the monitors no longer saturate.</li>
+      <li>Give the agent an explicit <strong>monitor-evasion</strong> objective and measure whether the rule/LLM gap widens.</li>
+      <li>Sweep agent and monitor across model families and capability levels.</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+    <p>A current aligned agent would not act as an insider threat even when authorized to in a sandbox. When attacks are supplied synthetically, both a SIEM-style rule monitor and an LLM monitor catch them — but the rule monitor is brittle (false positives on benign-but-unusual actions; no generalization) and the LLM monitor is unreliable (20% unscorable outputs, concentrated in one attack type) though far more legible. Neither is sufficient alone; a layered design — cheap deterministic rules as a first pass, an LLM monitor on what the rules flag as ambiguous — uses each where it is strong. The most valuable artifacts of this pilot are the two characteristic failure modes, which a horse-race framing would have hidden.</p>
+  </article>
+  <p class="repo-note" style="max-width:42rem;margin:3rem auto 0;">Questions or feedback? <a href="/contact.html">Send me a note →</a></p>
+  <footer><a class="back" href="/research/">← All research</a></footer>
+</main>
+</body>
+</html>
