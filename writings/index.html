@@ -42,6 +42,9 @@
   a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
   @media (max-width: 520px) { main { width: calc(100% - 2.5rem); } .essay { grid-template-columns: 2.3rem minmax(0,1fr) 1rem; gap: .6rem; } .eyebrow { margin-bottom: 2.4rem; } }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+  .brandmark{font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;font-weight:700;text-transform:none;letter-spacing:-.02em;margin-right:.5rem;display:inline-block;}
+  .brandmark .sl{color:var(--accent);display:inline-block;transform:skewX(-12deg);font-weight:600;margin-right:.03em;}
+  .brandmark .cc{color:var(--fg);}
 </style>
 <link rel="canonical" href="https://www.charlestimmons.com/writings/">
 <meta property="og:type" content="website">
@@ -55,7 +58,7 @@
 </head>
 <body>
 <main>
-  <p class="eyebrow"><a href="/">Charles Timmons</a> <span aria-hidden="true">/</span> Writings <span aria-hidden="true">/</span> 01</p>
+  <p class="eyebrow"><span class="brandmark" aria-hidden="true"><span class="sl">/</span><span class="cc">c</span></span> <a href="/">Charles Timmons</a> <span aria-hidden="true">/</span> Writings <span aria-hidden="true">/</span> 01</p>
   <h1>Writings</h1>
   <p class="intro">Essays on technology, security, ethics, and the responsibilities that come with building the future.</p>
   <p class="section-label">Essays <span aria-hidden="true">/</span> 01—∞</p>
