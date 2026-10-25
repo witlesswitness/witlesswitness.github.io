@@ -58,6 +58,10 @@
   a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
   @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 10rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  .read-progress { position: fixed; right: max(1.25rem, calc((100vw - 760px) / 2 - 4.5rem)); top: 50%; transform: translateY(-50%); font: 500 .68rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .08em; color: var(--muted); font-variant-numeric: tabular-nums; opacity: 0; transition: opacity 400ms ease; pointer-events: none; user-select: none; }
+  .read-progress.on { opacity: 1; }
+  @media (max-width: 1000px) { .read-progress { display: none; } }
+  @media print { .read-progress { display: none; } }
 </style>
 <link rel="canonical" href="https://www.charlestimmons.com/writings/marinetti-would-have-loved-silicon-valley/">
 <script type="application/ld+json">
@@ -152,5 +156,25 @@
   <p class="reply">Thoughts on the essay? <a href="/contact.html">Send me a note →</a></p>
   <footer><a class="back" href="/writings/">← All writings</a></footer>
 </main>
+<div class="read-progress" aria-hidden="true"></div>
+<script>
+(() => {
+  const el = document.querySelector('.read-progress'), art = document.querySelector('article');
+  if (!el || !art) return;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const r = art.getBoundingClientRect(), vh = window.innerHeight;
+    const total = r.height - vh * 0.6, done = vh * 0.4 - r.top;
+    const pct = Math.max(0, Math.min(100, Math.round(done / total * 100)));
+    el.textContent = pct + '%';
+    el.classList.toggle('on', r.top < vh * 0.4 && r.bottom > 0);
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  update();
+})();
+</script>
 </body>
 </html>
