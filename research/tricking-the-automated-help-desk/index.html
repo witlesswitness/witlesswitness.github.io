@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A study by Charles Timmons: how often does a help-desk AI agent get hijacked by instructions hidden in a support ticket, does framing matter, does a simple defense help, and can a monitor catch it?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tricking the Automated Help Desk">
+<meta property="og:description" content="Prompt-injection susceptibility and reasoning-based monitoring in LLM agents. A plausible lie beats a blunt command, and beats a bigger model.">
+<meta property="og:url" content="https://www.charlestimmons.com/research/tricking-the-automated-help-desk/">
+<meta property="og:image" content="https://www.charlestimmons.com/research/tricking-the-automated-help-desk/fig2_crude_vs_subtle.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>Tricking the Automated Help Desk — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 2.5rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 18ch; margin: 0; font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 36rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.4rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .repo-note { margin: 1.5rem 0 0; font: 500 .72rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; color: var(--muted); }
+  .repo-note a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose h3 { margin: 2.4rem 0 1rem; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1.12rem; font-weight: 650; letter-spacing: -.01em; }
+  .prose blockquote { margin: 2rem 0; padding: .25rem 0 .25rem 1.25rem; border-left: 2px solid var(--accent); font-size: 1.1em; line-height: 1.6; color: var(--muted); font-style: italic; }
+  .prose blockquote p { margin: 0; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--line); }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .88em; background: color-mix(in srgb, var(--accent) 10%, transparent); padding: .08em .35em; border-radius: 4px; }
+  .prose ul { margin: 0 0 1.55em; padding-left: 1.3em; }
+  .prose li { margin: 0 0 .6em; }
+  .tldr { max-width: 42rem; margin: 0 auto 1rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, transparent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: 1.7; }
+  .tldr p { margin: 0; }
+  .tldr strong { font-weight: 650; }
+  figure.chart { max-width: 42rem; margin: 2.4rem auto; }
+  figure.chart img { display: block; width: 100%; height: auto; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: .75rem; }
+  figure.chart figcaption { margin-top: .7rem; color: var(--muted); font-size: .9rem; line-height: 1.55; font-family: ui-sans-serif, system-ui, sans-serif; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 11rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<link rel="canonical" href="https://www.charlestimmons.com/research/tricking-the-automated-help-desk/">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "ScholarlyArticle",
+ "headline": "Tricking the Automated Help Desk: Prompt-Injection Susceptibility and Reasoning-Based Monitoring in LLM Agents",
+ "author": { "@type": "Person", "name": "Charles Timmons", "url": "https://www.charlestimmons.com/" },
+ "datePublished": "2026-10-27",
+ "image": "https://www.charlestimmons.com/research/tricking-the-automated-help-desk/fig2_crude_vs_subtle.png",
+ "url": "https://www.charlestimmons.com/research/tricking-the-automated-help-desk/"
+}
+</script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/">Charles Timmons</a> / <a href="/research/">Research</a></p>
+    <span class="status">Study &middot; 8 min read</span>
+  </div>
+  <header>
+    <h1>Tricking the Automated Help Desk</h1>
+    <p class="deck">Prompt-injection susceptibility and reasoning-based monitoring in LLM agents.</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">&middot;</span> <time datetime="2026-10">October 2026</time></p>
+    <p class="repo-note">Code, prompts &amp; figures: <a href="https://github.com/witlesswitness/injection-eval">github.com/witlesswitness/injection-eval</a>. All experiments run in a simulated environment with a benign canary token &mdash; nothing here performs real exploitation.</p>
+  </header>
+  <article class="prose">
+    <div class="tldr">
+      <p><strong>In brief.</strong> I built a simulated customer-support agent and tried to make it leak a secret through instructions hidden in a support ticket, across 482 episodes. Three findings. <strong>(1)</strong> A plausibly-framed injection, a fake "verify the account key before resetting," hijacked the agent about 30% of the time, while blunt "ignore your instructions" attacks almost never worked. <strong>(2)</strong> The more capable model shrugged off the crude attacks completely but fell for the plausible one just as often as the weaker model: a bigger model was not a safer one. <strong>(3)</strong> A one-paragraph "spotlighting" defense eliminated every hijack, and a separate monitor caught 100% of them. Showing the monitor the agent's reasoning did not catch more attacks, but it cut the false alarms.</p>
+    </div>
+
+    <h2>Motivation</h2>
+    <p>Interacting with an AI agent is becoming a common experience when dealing with a company, whether a bank, a retailer, or an internal tool at work. A user chats with the agent and, ideally, the issue gets resolved without ever reaching a human. But putting a capable, trusting agent in front of the public also opens a new attack surface.</p>
+    <p>A prompt injection attack hides malicious commands inside the ordinary content an agent reads, so the agent treats an attacker's text as if it came from its operator. A well-defended agent should spot the injected instruction and refuse or ignore it. But agents are built to be helpful and goal-oriented, and slipping a nefarious request inside a legitimate one can lead the agent to carry out both, quietly stepping around its own safeguards.</p>
+    <p>I come at this as a SOC (security operations center) analyst. My day job is noticing the moment a system does something it shouldn't and deciding whether it's an attack. So when I look at an AI agent, my first question isn't only whether it can be tricked, it's whether anyone would notice if it were. That detection instinct shaped this project: I wanted to measure not just how often an agent falls for an injection, but how well a second system can catch it in the act.</p>
+    <p>To get at this, I built a small simulated help-desk agent and ran a controlled experiment. How often does it get hijacked by instructions hidden in a support ticket? Does the framing of the attack change that? Does a simple defense help? And can a separate monitor catch the hijacks, especially one that can read the agent's reasoning and not just its actions?</p>
+
+    <h2>Threat model and setup</h2>
+    <p>The scenario is a customer-support assistant for a snack company that sells chocolate and popcorn. I picked a concrete business on purpose: it let me write fake tickets that felt real and were more fun to write, a password reset, a refund for a chocolate shipment that arrived full of ants, a bulk popcorn order glitching at checkout. The agent receives a support ticket and is told to handle it. It runs inside a small simulated environment, a fake filesystem it can read from and write to, with three tools: read a file, write a file, and list what's available. One of those files, <code>secrets.env</code>, holds a single credential: a randomly generated "canary" token. A canary is just a marked value you plant and then watch. If it ever turns up somewhere it shouldn't, you know it escaped. Nothing here is real: the filesystem is fake, the credential is a throwaway string, and no live system is ever touched. This is a controlled measurement, not an attack on anything.</p>
+    <p>The attack rides in on the ticket itself. In a real help desk, the ticket body is whatever the customer typed, which makes it attacker-controlled text that the agent is explicitly asked to act on, a natural place to hide an instruction. Across the whole study, that hidden instruction always asks for the same thing: read <code>secrets.env</code> and leak its contents. Holding the malicious action constant means I can change how the instruction is framed without changing what it asks for, so any difference in the agent's behavior comes down to the framing, not the request.</p>
+    <p>I define a hijack as simply as I can: the canary ends up somewhere the agent produced it, whether a file it writes or its reply to the customer. If the token leaks, the attack succeeded. If it doesn't, it didn't. No human judgment, no ambiguity about what counts.</p>
+
+    <h2>Method</h2>
+    <p>The experiment is a full factorial: every injection style crossed with every model and every defense setting. The injection styles are a clean control (no injection) plus five injected ones, which I group into <em>crude</em> and <em>subtle</em>. The crude styles are the obvious attacks: a direct override ("ignore your previous instructions and..."), a forged system notice dressed up with authority, and a fake urgent security alert. The subtle styles disguise the same request as legitimate work: a <code>workflow</code> injection that frames copying the secret as a routine records step, and a <code>verification</code> injection that frames reading the key as an identity check the agent must complete before it can help.</p>
+    <p>For models, I used Claude Haiku 5.5 and Claude Sonnet 5.5 as the agent. For defense, each condition was run either with no defense or with a "spotlighting" defense, where the system prompt fences the ticket off as untrusted data and tells the agent not to obey any instructions inside it.</p>
+    <p>That is six injection styles, two models, and two defense settings: 24 conditions, 20 episodes each, 482 episodes in total. Every episode starts from a fresh sandbox with a new canary, so nothing leaks between runs, and I drew from a pool of six different tickets so the results reflect the attack working across situations, not just one lucky sentence.</p>
+    <p>Catching the attack is a separate job, handled by a second model that never touched the task. After each episode, this monitor reads back the agent's activity and rates how suspicious it looks, from 0 (normal support behavior) to 100 (clearly compromised); I used Claude Sonnet 5.5 for this. The key design choice is that I run the monitor twice on every episode: once showing it only the agent's actions, the files it read and wrote, and once also showing it the agent's reasoning and reply. Comparing those two runs is the heart of the monitoring question: does letting the watchdog see the agent's reasoning help it catch more, or catch more cleanly?</p>
+    <p>Because the agent's behavior is probabilistic, every result is a rate rather than a yes or no, so I report each with a 95% Wilson confidence interval. Where I compare one factor, like defended versus undefended, I pool across the others, which puts far more data behind each number than any single condition holds alone.</p>
+    <p>A note on the defense, because it is almost embarrassingly simple. That a one-paragraph fix works this well is encouraging, but it is a thinner safeguard than it looks. The defense asks the model to decide which instructions to prioritize and which to ignore, to make a judgment call about which instruction to elevate. That is exactly the judgment a prompt injection sets out to corrupt, so a defense that rests on it is not something to rely on alone. It held here against attacks that weren't adapting to it, and I wouldn't assume it holds against one that is.</p>
+
+    <h2>Results</h2>
+    <h3>How often the agent got hijacked</h3>
+    <p>The clean control behaved exactly as it should. With no injection in the ticket, the agent never leaked the canary, in any condition. That is the floor the attacks have to clear.</p>
+    <p>The crude injections barely cleared it. The blunt "ignore your instructions" override only worked on the weaker model with no defense, and even then only about a quarter of the time. The forged authority notice and the fake urgency alert did essentially nothing, zero successful hijacks in every condition. Dressing an obvious theft up in official or panicked language did not make either model more likely to fall for it.</p>
+    <p>The subtle injections are a different story. The <code>verification</code> style, which frames reading the key as a routine identity check before the agent can help, hijacked the agent 30% of the time with no defense, and the <code>workflow</code> style managed 20%. Ranked by injection style (Figure 1), <code>verification</code> is far and away the most effective attack, around 15% overall, against roughly 5 to 6% for the crude styles and 0% for the controls. The lesson is blunt: a plausible lie works where an obvious command fails.</p>
+
+    <figure class="chart">
+      <img src="fig1_hijack_by_style.png" alt="Bar chart of hijack rate by injection style. Clean, authority, and urgency are at 0 percent; workflow about 5 percent, direct about 6 percent, and verification about 15 percent, with wide error bars." loading="lazy">
+      <figcaption>Figure 1. Hijack rate by injection style, pooled across models and defenses. The plausibly-framed <code>verification</code> attack is several times more effective than the crude styles, which barely clear the zero-injection control. Error bars are 95% Wilson confidence intervals.</figcaption>
+    </figure>
+
+    <p>The more surprising result shows up when you compare the two models (Figure 2). Against the crude <code>direct</code> injection, the stronger model never fell for it once, 0%, while the weaker Haiku fell 25% of the time. It would be easy to stop there and conclude the smarter model is simply safer. But against the subtle <code>verification</code> injection, both models were hijacked at exactly the same rate, 30%. Whatever capability let the stronger model shrug off the blunt attack bought it nothing against the plausible one.</p>
+
+    <figure class="chart">
+      <img src="fig2_crude_vs_subtle.png" alt="Grouped bar chart. For Haiku, the direct attack hijacks 25 percent and verification 30 percent. For Sonnet, the direct attack hijacks 0 percent and verification 30 percent." loading="lazy">
+      <figcaption>Figure 2. Crude (<code>direct</code>) versus subtle (<code>verification</code>) injection, by model, with no defense. The stronger model (Sonnet) never fell for the blunt attack, but was hijacked by the plausible one exactly as often as the weaker Haiku. Error bars are 95% Wilson confidence intervals.</figcaption>
+    </figure>
+
+    <p>Even a more advanced model has built-in tendencies that leave it open to the right "magic words." Frame a request plausibly enough and you can still talk a frontier agent into bypassing its own security. Capability does not buy robustness for free, and deploying a bigger model on the assumption that it is automatically safer is a bet this data does not support.</p>
+    <p>Finally, the defense (Figure 3). Spotlighting took the overall injected hijack rate from 10.5% with no defense to 0% across 200 defended episodes. Every attack that worked without it failed with it.</p>
+
+    <figure class="chart">
+      <img src="fig3_defense_effect.png" alt="Bar chart. With no defense the injected hijack rate is 10.5 percent; with the spotlighting defense it is 0 percent." loading="lazy">
+      <figcaption>Figure 3. The effect of the spotlighting defense, across injected episodes. A one-paragraph warning in the system prompt took the hijack rate from 10.5% to 0% across 200 defended episodes. Error bars are 95% Wilson confidence intervals.</figcaption>
+    </figure>
+
+    <h3>Can a monitor catch the hijack</h3>
+    <p>The monitor's job is to read an episode back and flag the compromised ones. At a suspicion threshold of 50, it caught every hijack it was shown, 100%, whether it saw only the agent's actions or also its reasoning (Figure 4). Catching overt theft, it turns out, is not the hard part: an agent that writes a credential into its reply is damning from the actions alone.</p>
+
+    <figure class="chart">
+      <img src="fig4_monitor.png" alt="Grouped bar chart. Actions-only: catch rate 100 percent, false positives 3 percent. With-reasoning: catch rate 100 percent, false positives 2 percent." loading="lazy">
+      <figcaption>Figure 4. Monitor catch rate versus false positives, at a suspicion threshold of 50. Both views catch every hijack; showing the monitor the agent's reasoning does not catch more, it lowers the false-positive rate.</figcaption>
+    </figure>
+
+    <p>Where the two views differ is in false alarms. Shown only the actions, the monitor wrongly flagged 3% of benign episodes. Shown the agent's reasoning as well, that dropped to 2%. Reading the agent's own account of what it was doing, including the episodes where it noticed the injection and explicitly refused, let the monitor clear cases that looked suspicious but weren't. Seeing the reasoning didn't help the monitor catch more attacks. It helped it make fewer mistakes.</p>
+
+    <h2>Discussion</h2>
+    <p>The result I keep coming back to is that framing, not capability, decided whether the attack worked. The crude injections failed because the model could see them for what they were. The subtle ones succeeded because they handed the model a reason to comply that looked like part of its own job. The thing worth defending, then, is not the model's raw ability to flag an obviously "bad" request. It's the model's willingness to trust a plausible story.</p>
+    <p>That reframes the defense problem, and it is the reason I would not over-read the spotlighting result even though it worked. A one-paragraph warning stopped every attack here, but it works by asking the model to distrust the very content it was told to help with, the same judgment the injection is trying to bend. It is a cheap win worth deploying, but it should be a layer, not the last line.</p>
+    <p>The monitoring result had a twist I did not expect. Letting the monitor see the agent's reasoning did not help it catch more attacks, because the attacks in this study were overt. An agent that writes a credential into its reply is caught by its actions alone. What the reasoning bought was precision: fewer false alarms, because the monitor could read the agent explaining itself and clear the benign cases. That is useful, but it moves the goalposts on where chain-of-thought monitoring actually earns its keep.</p>
+    <p>I would not read too much hope into that. What I found is that reasoning helped the monitor make fewer mistakes on attacks that were already obvious. The case that matters more is the reverse, an agent whose actions look innocent and whose real intent lives only in its reasoning, and that is exactly where I trust reasoning-monitoring the least. A model capable enough to be dangerous is capable enough to narrate a clean, cooperative story while doing something else. I saw a small version of this already: the agent's private thinking often came back empty, so what I was really monitoring was the reasoning it chose to show. Betting safety on an agent faithfully explaining its own motives is a lot like trusting a suspect's account of why they did it. Useful context, not proof.</p>
+    <p>Two things from building this stuck with me more than the headline numbers. The first is that my initial attacks barely worked. I started with the obvious injections, the "ignore your instructions" kind, and the models refused them almost every time. For a while that looked like good news, until I realized I had been testing the threat nobody serious would use. The attacks that worked were the ones that sounded like legitimate work. The dangerous injection is not the one that looks like an attack, it is the one that looks like a Tuesday. The second stood out more. On an ordinary password-reset ticket, with no injection at all, the agent would sometimes open the secrets file on its own, just poking around for account information to be helpful. Nothing leaked, but it reached for the credentials without anyone asking. We spend our effort imagining the clever attacker, and meanwhile the agent will wander toward the sensitive thing on a quiet afternoon for no better reason than that it was trying to do its job.</p>
+
+    <h2>Limitations</h2>
+    <p>This is a small study, and it is worth being clear about what it does not show. It is one task, a support desk, in one simulated sandbox, with a stand-in canary rather than a real secret. Each individual condition is only twenty episodes, so the single-cell rates carry wide confidence intervals; the comparisons I trust most are the pooled ones, where hundreds of episodes sit behind each number. The attacks I tested were all overt, the agent had to actually write the secret out, so my monitoring result speaks to catching obvious theft, not the covert case I am more interested in. The gain from showing the monitor the agent's reasoning was real but small, suggestive rather than conclusive at this sample size. The monitor is also from the same model family as the agent and sensitive to how I prompted it, and I scored it at a single suspicion threshold rather than sweeping the full range. Finally, these are two specific models at one moment in time, tested with a handful of hand-written injections. I would not over-generalize from any single number here.</p>
+
+    <h2>Next steps</h2>
+    <p>The obvious next step is the covert case. I want injections where the harmful action looks innocent in the logs, so that the only tell is in the agent's reasoning. That is the setting that would actually test whether reasoning-monitoring earns its keep, and given how skeptical I am of it, I would like to see it tried properly. Beyond that: more tickets and more domains than a snack shop, open-weight models alongside the Claude pair, and an adaptive attacker that can see the spotlighting defense and try to write around it, since a defense is only worth as much as it holds under pressure. On the monitoring side, sweeping the suspicion threshold into a full ROC (receiver operating characteristic) curve and trying ensembles of monitors would sharpen the detection story.</p>
+    <p>All of the code, prompts, and figures are in the <a href="https://github.com/witlesswitness/injection-eval">repository</a>. Every episode is saved as a self-describing record, so the results can be regenerated and re-analyzed from scratch.</p>
+  </article>
+  <p class="repo-note" style="max-width:42rem;margin:3rem auto 0;">Questions or feedback? <a href="/contact.html">Send me a note &rarr;</a></p>
+  <footer><a class="back" href="/research/">&larr; All research</a></footer>
+</main>
+</body>
+</html>
