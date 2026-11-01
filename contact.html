@@ -135,6 +135,8 @@
   }
   .linkedin:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
   .arrow { font-size: 1.15rem; }
+  /* Honeypot: hidden from people, often filled in by bots. Formspree drops any submission that fills it. */
+  .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
   @media (max-width: 420px) {
     main { width: calc(100% - 2.5rem); }
     .actions { align-items: flex-start; flex-direction: column-reverse; }
@@ -157,6 +159,9 @@
   <p class="intro">Have a question, an idea, or something worth discussing? Send me a note.</p>
   <a class="linkedin" href="https://www.linkedin.com/in/charles-timmons" target="_blank" rel="noopener noreferrer">Or find me on LinkedIn ↗</a>
   <form action="https://formspree.io/f/mpzolqwl" method="POST">
+    <div class="hp" aria-hidden="true">
+      <label>Leave this field empty <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label>
+    </div>
     <label class="field">
       <span class="field-label">Your email address</span>
       <input type="email" name="_replyto" autocomplete="email" placeholder="you@example.com" required>
