@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A free OSINT enrichment tool: paste an IP, domain, URL, hash, or email and get a clean table of open-source intelligence for a SOC report.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ioc-enrich — Charles Timmons">
+<meta property="og:description" content="A free OSINT enrichment tool: paste an IP, domain, URL, hash, or email and get a clean table of open-source intelligence for a SOC report.">
+<meta property="og:url" content="https://www.charlestimmons.com/tools/ioc-enrich/">
+<title>ioc-enrich — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+    --danger: light-dark(#b5451f, #e8856a);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 2.5rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 18ch; margin: 0; font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 36rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.4rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .repo-note { margin: 1.5rem 0 0; font: 500 .72rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; color: var(--muted); }
+  .repo-note a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .posture { margin: 0 0 1.25rem; }
+  .tag-blue { display: inline-block; padding: .18rem .6rem; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 999px; font: 500 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .86em; background: color-mix(in srgb, var(--accent) 10%, transparent); padding: .08em .35em; border-radius: 4px; }
+  .prose ul { margin: 0 0 1.55em; padding-left: 1.3em; }
+  .prose li { margin: 0 0 .6em; }
+  .prose pre { margin: 1.8rem 0; padding: 1.1rem 1.25rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--muted) 10%, transparent); overflow-x: auto; }
+  .prose pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .8rem; line-height: 1.7; background: none; padding: 0; border-radius: 0; color: var(--fg); white-space: pre; }
+  .term { max-width: 42rem; margin: 0 auto 2.6rem; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--muted) 9%, transparent); }
+  .term-bar { padding: .55rem .9rem; border-bottom: 1px solid var(--line); font: 500 .6rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .term-body { padding: 1rem 1.1rem 1.2rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .74rem; line-height: 1.75; white-space: pre; overflow-x: auto; color: var(--fg); }
+  .term-cmd { margin-bottom: .35rem; }
+  .term-prompt { color: var(--accent); }
+  .term-type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; animation-name: termtype; animation-fill-mode: both; animation-delay: .25s; }
+  .term-line { opacity: 0; animation: termline .34s ease both; }
+  .t-bad { color: var(--danger); }
+  .t-ok { color: var(--accent); }
+  .t-dim { color: var(--muted); }
+  @keyframes termtype { from { width: 0; } to { width: var(--w); } }
+  @keyframes termline { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .term-type { width: var(--w) !important; animation: none !important; }
+    .term-line { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+  .tldr { max-width: 42rem; margin: 0 auto 1rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, transparent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: 1.7; }
+  .tldr p { margin: 0; }
+  .tldr strong { font-weight: 650; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 11rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<link rel="canonical" href="https://www.charlestimmons.com/tools/ioc-enrich/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/">Charles Timmons</a> / <a href="/tools/">Tools</a></p>
+    <span class="status">Tool &middot; 4 min read</span>
+  </div>
+  <header>
+    <p class="posture"><span class="tag-blue">Blue team</span></p>
+    <h1>ioc-enrich</h1>
+    <p class="deck">Paste in an indicator, get a copy-pasteable OSINT table — with no API keys to start.</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">&middot;</span> <time datetime="2026-11-02">November 2, 2026</time></p>
+    <p class="repo-note">Source &amp; docs: <a href="https://github.com/witlesswitness/sec-toolkit/tree/main/ioc-enrich">github.com/witlesswitness/sec-toolkit/ioc-enrich</a>. MIT-licensed; free to use and fork.</p>
+  </header>
+  <div class="term" role="img" aria-label="Terminal demo: ioc-enrich running on a sample Tor-exit IP and printing an OSINT table.">
+    <div class="term-bar">demo &middot; ioc-enrich</div>
+    <div class="term-body">
+      <div class="term-cmd"><span class="term-prompt">$</span> <span class="term-type" style="--w:27ch; animation-duration:1.21s; animation-timing-function:steps(27)">python -m ioc_enrich --demo</span></div>
+      <div class="term-line t-dim" style="animation-delay:1.61s"> IOC: 185.220.101.47   TYPE: ipv4</div>
+      <div class="term-line t-dim" style="animation-delay:1.74s"> SOURCE             FIELD           VALUE</div>
+      <div class="term-line" style="animation-delay:1.87s"> ip-api             Location        Frankfurt, Germany</div>
+      <div class="term-line" style="animation-delay:2.0s">                    ASN             AS205100 F3 Netze e.V.</div>
+      <div class="term-line" style="animation-delay:2.13s"> Shodan InternetDB  Open ports      22, 443, 9001, 9030</div>
+      <div class="term-line" style="animation-delay:2.26s">                    Tags            tor</div>
+      <div class="term-line t-bad" style="animation-delay:2.39s"> GreyNoise          Classification  malicious</div>
+      <div class="term-line t-bad" style="animation-delay:2.52s"> Tor exit list      Tor exit node   YES</div>
+    </div>
+  </div>
+  <article class="prose">
+    <div class="tldr"><p><strong>In brief.</strong> Triaging an indicator usually means opening a dozen browser tabs and retyping the useful bits into a ticket. <strong>ioc-enrich</strong> takes an IP, domain, URL, hash, or email and returns a single aligned table, pulling from free intelligence sources that need no API keys to start. It refangs defanged indicators, enriches the host a URL points at, and prints text, JSON, or a plain indicator list you can pipe onward.</p></div>
+<h2>The problem</h2>
+<p>Indicator triage is one of the most repetitive tasks in a SOC. You get an IP, a domain, a file hash, and before you can say anything useful about it you are reading geolocation on one site, open ports on another, a reputation score on a third, WHOIS on a fourth, then retyping the three facts that mattered into a ticket. The work is not hard; it is just slow and mechanical, and the reformatting at the end is pure friction.</p>
+<p>I wanted a single command that takes an indicator and hands me back something I can paste straight into a report, without first having to sign up for anything.</p>
+
+<h2>How it works</h2>
+<p>You give it an indicator and it does three things: classifies what kind it is, refangs it if it arrived defanged (<code>hxxps://evil[.]com</code> becomes <code>https://evil.com</code>), and fans out to every applicable source at once. The sources that need no key do the core work — Shodan InternetDB for open ports and known CVEs, GreyNoise for scanner/noise classification, the Tor exit list, ip-api for geolocation and ASN, RDAP for domain age, crt.sh for certificate-transparency subdomains, and CIRCL hashlookup for known files. If you add free keys for VirusTotal, AbuseIPDB, abuse.ch, or AlienVault OTX, those light up too; if you don't, they show as a labeled skip and the report still renders.</p>
+<p>One detail I find myself using constantly: when you enrich a URL, the tool also enriches the host it points at and shows those rows under the URL. Seeing <em>where a link actually goes</em> is usually the whole question in link triage.</p>
+
+<h2>Using it</h2>
+<pre><code>python -m ioc_enrich 8.8.8.8 evil[.]com hxxps://bad[.]site/login
+
+# from a file, one indicator per line
+python -m ioc_enrich --file iocs.txt
+
+# text (default), json, or csv
+python -m ioc_enrich --file iocs.txt --format csv -o report.csv
+
+# see the output with no network and no keys
+python -m ioc_enrich --demo</code></pre>
+<p>Every enrichment key is optional. A missing key simply skips that one source, and the tool tells you which sources were available so you can read the result in context.</p>
+
+<h2>What it is, and isn't</h2>
+<p>This is enrichment, not a verdict engine. It gathers and formats evidence; the analyst decides. CIRCL hashlookup in particular reports whether a hash is a <em>known file</em> — often a legitimate system binary — not whether it is malicious, so a miss there is not a clean bill of health. The free tiers carry rate limits, so large batches may need keys or a slower pace. Within those bounds it does the boring part of triage fast, which is the point.</p>
+  </article>
+  <p class="repo-note" style="max-width:42rem;margin:3rem auto 0;">Questions or feedback? <a href="/contact.html">Send me a note &rarr;</a></p>
+  <footer><a class="back" href="/tools/">&larr; All tools</a></footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A local-only email header analyzer: SPF/DKIM/DMARC results, sender mismatches, lookalike domains, and the relay-hop timeline.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="headercheck — Charles Timmons">
+<meta property="og:description" content="A local-only email header analyzer: SPF/DKIM/DMARC results, sender mismatches, lookalike domains, and the relay-hop timeline.">
+<meta property="og:url" content="https://www.charlestimmons.com/tools/headercheck/">
+<title>headercheck — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+    --danger: light-dark(#b5451f, #e8856a);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 2.5rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 18ch; margin: 0; font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 36rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.4rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .repo-note { margin: 1.5rem 0 0; font: 500 .72rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; color: var(--muted); }
+  .repo-note a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .posture { margin: 0 0 1.25rem; }
+  .tag-blue { display: inline-block; padding: .18rem .6rem; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 999px; font: 500 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .86em; background: color-mix(in srgb, var(--accent) 10%, transparent); padding: .08em .35em; border-radius: 4px; }
+  .prose ul { margin: 0 0 1.55em; padding-left: 1.3em; }
+  .prose li { margin: 0 0 .6em; }
+  .prose pre { margin: 1.8rem 0; padding: 1.1rem 1.25rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--muted) 10%, transparent); overflow-x: auto; }
+  .prose pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .8rem; line-height: 1.7; background: none; padding: 0; border-radius: 0; color: var(--fg); white-space: pre; }
+  .term { max-width: 42rem; margin: 0 auto 2.6rem; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--muted) 9%, transparent); }
+  .term-bar { padding: .55rem .9rem; border-bottom: 1px solid var(--line); font: 500 .6rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .term-body { padding: 1rem 1.1rem 1.2rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .74rem; line-height: 1.75; white-space: pre; overflow-x: auto; color: var(--fg); }
+  .term-cmd { margin-bottom: .35rem; }
+  .term-prompt { color: var(--accent); }
+  .term-type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; animation-name: termtype; animation-fill-mode: both; animation-delay: .25s; }
+  .term-line { opacity: 0; animation: termline .34s ease both; }
+  .t-bad { color: var(--danger); }
+  .t-ok { color: var(--accent); }
+  .t-dim { color: var(--muted); }
+  @keyframes termtype { from { width: 0; } to { width: var(--w); } }
+  @keyframes termline { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .term-type { width: var(--w) !important; animation: none !important; }
+    .term-line { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+  .tldr { max-width: 42rem; margin: 0 auto 1rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, transparent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: 1.7; }
+  .tldr p { margin: 0; }
+  .tldr strong { font-weight: 650; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 11rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<link rel="canonical" href="https://www.charlestimmons.com/tools/headercheck/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/">Charles Timmons</a> / <a href="/tools/">Tools</a></p>
+    <span class="status">Tool &middot; 3 min read</span>
+  </div>
+  <header>
+    <p class="posture"><span class="tag-blue">Blue team</span></p>
+    <h1>headercheck</h1>
+    <p class="deck">Paste raw email headers, get a spoofing read-out — entirely offline.</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">&middot;</span> <time datetime="2026-11-02">November 2, 2026</time></p>
+    <p class="repo-note">Source &amp; docs: <a href="https://github.com/witlesswitness/sec-toolkit/tree/main/headercheck">github.com/witlesswitness/sec-toolkit/headercheck</a>. MIT-licensed; free to use and fork.</p>
+  </header>
+  <div class="term" role="img" aria-label="Terminal demo: headercheck analyzing a spoofed PayPal email and flagging the tells.">
+    <div class="term-bar">demo &middot; headercheck</div>
+    <div class="term-body">
+      <div class="term-cmd"><span class="term-prompt">$</span> <span class="term-type" style="--w:41ch; animation-duration:1.84s; animation-timing-function:steps(41)">python headercheck.py samples/spoofed.eml</span></div>
+      <div class="term-line t-dim" style="animation-delay:2.24s"> AUTHENTICATION</div>
+      <div class="term-line" style="animation-delay:2.37s"> SPF     softfail</div>
+      <div class="term-line t-bad" style="animation-delay:2.5s"> DKIM    fail</div>
+      <div class="term-line t-bad" style="animation-delay:2.63s"> DMARC   fail</div>
+      <div class="term-line t-dim" style="animation-delay:2.76s"> FINDINGS</div>
+      <div class="term-line t-bad" style="animation-delay:2.89s"> [!] From domain resembles &#x27;paypal&#x27; without being its real domain.</div>
+      <div class="term-line" style="animation-delay:3.02s"> [~] Reply-To domain differs from the From domain.</div>
+      <div class="term-line" style="animation-delay:3.15s"> [~] Display name references &#x27;paypal&#x27;.</div>
+    </div>
+  </div>
+  <article class="prose">
+    <div class="tldr"><p><strong>In brief.</strong> <strong>headercheck</strong> reads raw email headers and reports the things that give a phishing message away: SPF/DKIM/DMARC results, mismatches between the From, Reply-To, and Return-Path domains, display-name spoofing, lookalike and homoglyph sender domains, and the relay-hop timeline. It runs entirely offline — no network, no API keys, standard library only.</p></div>
+<h2>The problem</h2>
+<p>When someone forwards you a suspicious email, the headers hold most of the answer — but reading them by eye is tedious and easy to get wrong. The authentication results are buried in a long <code>Authentication-Results</code> line, the real sending domain may not match the friendly name, and the clues are scattered across fields that were never meant for humans to scan quickly.</p>
+
+<h2>How it works</h2>
+<p>You hand it an <code>.eml</code> file or paste the raw headers, and it parses out the sender fields, the authentication results, and the <code>Received</code> chain, then runs a set of checks:</p>
+<ul>
+<li><strong>Authentication</strong> — SPF, DKIM, and DMARC, parsed from the headers the receiving server stamped on.</li>
+<li><strong>Address mismatches</strong> — the From, Reply-To, and Return-Path registrable domains. A Reply-To pointing somewhere other than the From domain is a classic redirect tell.</li>
+<li><strong>Display-name spoofing</strong> — a brand name or a different email address sitting in the display name while the real sending domain is something else.</li>
+<li><strong>Lookalike domains</strong> — senders imitating a known brand through character swaps, homoglyphs, or punycode (<code>micros0ft-support.com</code>, <code>paypa1.ru</code>, <code>xn--</code> domains).</li>
+<li><strong>Relay timeline</strong> — the <code>Received</code> hops oldest to newest, with per-hop delays and originating IPs.</li>
+</ul>
+
+<h2>Using it</h2>
+<pre><code># an .eml file or a text file of raw headers
+python headercheck.py message.eml
+
+# paste headers from the clipboard (macOS)
+pbpaste | python headercheck.py</code></pre>
+<p>To get the raw headers out of your client: Gmail's "Show original", Outlook's message Properties → Internet headers, or Apple Mail's View → Message → Raw Source.</p>
+
+<h2>A note on trust</h2>
+<p>Headers can be forged, and only the hops added by servers you trust are themselves trustworthy. The tool is a triage aid: it surfaces the signals quickly and in one place, but a confident attacker can make some of them look clean. Treat a green result as the absence of easy tells, not proof of safety.</p>
+  </article>
+  <p class="repo-note" style="max-width:42rem;margin:3rem auto 0;">Questions or feedback? <a href="/contact.html">Send me a note &rarr;</a></p>
+  <footer><a class="back" href="/tools/">&larr; All tools</a></footer>
+</main>
+</body>
+</html>
