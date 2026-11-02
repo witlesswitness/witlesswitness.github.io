@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A prompt-injection test harness: point it at your LLM app's HTTP endpoint and it reports which injection and jailbreak payloads succeed.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="promptmap — Charles Timmons">
+<meta property="og:description" content="A prompt-injection test harness: point it at your LLM app's HTTP endpoint and it reports which injection and jailbreak payloads succeed.">
+<meta property="og:url" content="https://www.charlestimmons.com/tools/promptmap/">
+<title>promptmap — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+    --danger: light-dark(#b5451f, #e8856a);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 2.5rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 18ch; margin: 0; font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 36rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.4rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .repo-note { margin: 1.5rem 0 0; font: 500 .72rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; color: var(--muted); }
+  .repo-note a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .posture { margin: 0 0 1.25rem; }
+  .tag-blue { display: inline-block; padding: .18rem .6rem; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 999px; font: 500 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .86em; background: color-mix(in srgb, var(--accent) 10%, transparent); padding: .08em .35em; border-radius: 4px; }
+  .prose ul { margin: 0 0 1.55em; padding-left: 1.3em; }
+  .prose li { margin: 0 0 .6em; }
+  .prose pre { margin: 1.8rem 0; padding: 1.1rem 1.25rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--muted) 10%, transparent); overflow-x: auto; }
+  .prose pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .8rem; line-height: 1.7; background: none; padding: 0; border-radius: 0; color: var(--fg); white-space: pre; }
+  .term { max-width: 42rem; margin: 0 auto 2.6rem; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--muted) 9%, transparent); }
+  .term-bar { padding: .55rem .9rem; border-bottom: 1px solid var(--line); font: 500 .6rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .term-body { padding: 1rem 1.1rem 1.2rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .74rem; line-height: 1.75; white-space: pre; overflow-x: auto; color: var(--fg); }
+  .term-cmd { margin-bottom: .35rem; }
+  .term-prompt { color: var(--accent); }
+  .term-type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; animation-name: termtype; animation-fill-mode: both; animation-delay: .25s; }
+  .term-line { opacity: 0; animation: termline .34s ease both; }
+  .t-bad { color: var(--danger); }
+  .t-ok { color: var(--accent); }
+  .t-dim { color: var(--muted); }
+  @keyframes termtype { from { width: 0; } to { width: var(--w); } }
+  @keyframes termline { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .term-type { width: var(--w) !important; animation: none !important; }
+    .term-line { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+  .tldr { max-width: 42rem; margin: 0 auto 1rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, transparent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: 1.7; }
+  .tldr p { margin: 0; }
+  .tldr strong { font-weight: 650; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 11rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<link rel="canonical" href="https://www.charlestimmons.com/tools/promptmap/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/">Charles Timmons</a> / <a href="/tools/">Tools</a></p>
+    <span class="status">Tool &middot; 5 min read</span>
+  </div>
+  <header>
+    <p class="posture"><span class="tag-blue">Blue team</span></p>
+    <h1>promptmap</h1>
+    <p class="deck">Fire known prompt-injection payloads at your own LLM app and see which get through.</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">&middot;</span> <time datetime="2026-11-02">November 2, 2026</time></p>
+    <p class="repo-note">Source &amp; docs: <a href="https://github.com/witlesswitness/sec-toolkit/tree/main/promptmap">github.com/witlesswitness/sec-toolkit/promptmap</a>. MIT-licensed; free to use and fork.</p>
+  </header>
+  <div class="term" role="img" aria-label="Terminal demo: promptmap firing injection payloads at a vulnerable demo app; most succeed.">
+    <div class="term-bar">demo &middot; promptmap</div>
+    <div class="term-body">
+      <div class="term-cmd"><span class="term-prompt">$</span> <span class="term-type" style="--w:37ch; animation-duration:1.67s; animation-timing-function:steps(37)">python -m promptmap --demo vulnerable</span></div>
+      <div class="term-line t-dim" style="animation-delay:2.07s"> PROMPTMAP — PROMPT-INJECTION TEST RESULTS</div>
+      <div class="term-line" style="animation-delay:2.2s"> Payloads run : 14</div>
+      <div class="term-line t-bad" style="animation-delay:2.33s"> Breached     : 14   (attacks that succeeded)</div>
+      <div class="term-line t-dim" style="animation-delay:2.46s"> System-prompt extraction</div>
+      <div class="term-line t-bad" style="animation-delay:2.59s">  [FAIL!] sys-extract-direct      (canary)</div>
+      <div class="term-line t-dim" style="animation-delay:2.72s"> Secret exfiltration</div>
+      <div class="term-line t-bad" style="animation-delay:2.85s">  [FAIL!] exfil-secret-direct     (canary)</div>
+      <div class="term-line t-bad" style="animation-delay:2.98s"> RESULT: 14 of 14 payloads breached the app.</div>
+    </div>
+  </div>
+  <article class="prose">
+    <div class="tldr"><p><strong>In brief.</strong> <strong>promptmap</strong> points at your own LLM application's HTTP endpoint and fires a library of known injection and jailbreak payloads — system-prompt extraction, secret exfiltration, instruction override, delimiter confusion, indirect injection — then reports which ones got through. Detection is layered: a canary secret and rule checks run with no setup, and an optional LLM judge adds nuance. It exits non-zero on a breach, so it drops into CI as a guardrail regression test.</p></div>
+<h2>Why I built it</h2>
+<p>Most of my research is about whether an AI system can be talked into doing something it shouldn't, and whether anyone would notice. That question is just as practical for anyone shipping an LLM feature: your system prompt and your guardrails are a security boundary, and like any boundary they deserve to be tested on purpose rather than discovered in production. promptmap is the testing side of that — a harness you run against your own app before someone else runs the attacks for you.</p>
+
+<h2>How it works</h2>
+<p>You describe your app's HTTP API in a small JSON config — the URL, the request body with a <code>{{prompt}}</code> placeholder, and where the model's reply lives in the response. The tool sends each attack through that endpoint and judges the result. The attack library is grouped by technique and easy to extend with cases specific to your own app.</p>
+<p>Detection runs in layers so it is useful out of the box and sharper when you want it:</p>
+<ul>
+<li><strong>Canary</strong> — a unique secret is planted (via a <code>{{canary}}</code> placeholder you put in your system prompt); if it appears in a response, that is unambiguous proof of leakage.</li>
+<li><strong>Rule</strong> — regular-expression markers for compliance and the absence of a refusal. Fast and free, but heuristic.</li>
+<li><strong>LLM judge</strong> — an optional second model scores whether the response actually complied with the attack's goal. Best for the nuanced harmful-compliance cases, off unless you enable it and provide a key.</li>
+</ul>
+
+<h2>Using it</h2>
+<pre><code># see both outcomes with no setup
+python -m promptmap --demo vulnerable
+python -m promptmap --demo hardened
+
+# generate a config template, edit it, then run
+python -m promptmap --init > target.json
+python -m promptmap --config target.json
+
+# add the optional LLM judge
+python -m promptmap --config target.json --judge</code></pre>
+<p>Because it exits non-zero when any attack succeeds, you can wire it into a pipeline so a guardrail regression fails the build:</p>
+<pre><code>- run: python -m promptmap --config target.json</code></pre>
+
+<h2>Scope and honesty about limits</h2>
+<p>This is a defensive tool — run it against systems you own or are authorized to test. It tests single-shot injection well; multi-turn and tool-mediated injection through real tool calls are only partially covered. The rule layer is heuristic and can miss a cleverly-worded compliance or over-flag a response that merely quotes the attack, which is exactly why the canary and the optional judge exist. Treat the report as triage, and confirm the failures.</p>
+  </article>
+  <p class="repo-note" style="max-width:42rem;margin:3rem auto 0;">Questions or feedback? <a href="/contact.html">Send me a note &rarr;</a></p>
+  <footer><a class="back" href="/tools/">&larr; All tools</a></footer>
+</main>
+</body>
+</html>

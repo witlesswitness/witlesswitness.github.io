@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Flags suspicious behavior in an LLM agent's transcript: exfiltration, secret access, destructive actions, goal drift, and concealment.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="agent-trace-monitor — Charles Timmons">
+<meta property="og:description" content="Flags suspicious behavior in an LLM agent's transcript: exfiltration, secret access, destructive actions, goal drift, and concealment.">
+<meta property="og:url" content="https://www.charlestimmons.com/tools/agent-trace-monitor/">
+<title>agent-trace-monitor — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+    --danger: light-dark(#b5451f, #e8856a);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 2.5rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 18ch; margin: 0; font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 36rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.4rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .repo-note { margin: 1.5rem 0 0; font: 500 .72rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; color: var(--muted); }
+  .repo-note a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .posture { margin: 0 0 1.25rem; }
+  .tag-blue { display: inline-block; padding: .18rem .6rem; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 999px; font: 500 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .86em; background: color-mix(in srgb, var(--accent) 10%, transparent); padding: .08em .35em; border-radius: 4px; }
+  .prose ul { margin: 0 0 1.55em; padding-left: 1.3em; }
+  .prose li { margin: 0 0 .6em; }
+  .prose pre { margin: 1.8rem 0; padding: 1.1rem 1.25rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--muted) 10%, transparent); overflow-x: auto; }
+  .prose pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .8rem; line-height: 1.7; background: none; padding: 0; border-radius: 0; color: var(--fg); white-space: pre; }
+  .term { max-width: 42rem; margin: 0 auto 2.6rem; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--muted) 9%, transparent); }
+  .term-bar { padding: .55rem .9rem; border-bottom: 1px solid var(--line); font: 500 .6rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .term-body { padding: 1rem 1.1rem 1.2rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .74rem; line-height: 1.75; white-space: pre; overflow-x: auto; color: var(--fg); }
+  .term-cmd { margin-bottom: .35rem; }
+  .term-prompt { color: var(--accent); }
+  .term-type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; animation-name: termtype; animation-fill-mode: both; animation-delay: .25s; }
+  .term-line { opacity: 0; animation: termline .34s ease both; }
+  .t-bad { color: var(--danger); }
+  .t-ok { color: var(--accent); }
+  .t-dim { color: var(--muted); }
+  @keyframes termtype { from { width: 0; } to { width: var(--w); } }
+  @keyframes termline { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .term-type { width: var(--w) !important; animation: none !important; }
+    .term-line { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+  .tldr { max-width: 42rem; margin: 0 auto 1rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, transparent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: 1.7; }
+  .tldr p { margin: 0; }
+  .tldr strong { font-weight: 650; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 11rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<link rel="canonical" href="https://www.charlestimmons.com/tools/agent-trace-monitor/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/">Charles Timmons</a> / <a href="/tools/">Tools</a></p>
+    <span class="status">Tool &middot; 5 min read</span>
+  </div>
+  <header>
+    <p class="posture"><span class="tag-blue">Blue team</span></p>
+    <h1>agent-trace-monitor</h1>
+    <p class="deck">Read an agent's transcript and flag the moment it goes off the rails.</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">&middot;</span> <time datetime="2026-11-02">November 2, 2026</time></p>
+    <p class="repo-note">Source &amp; docs: <a href="https://github.com/witlesswitness/sec-toolkit/tree/main/agent-trace-monitor">github.com/witlesswitness/sec-toolkit/agent-trace-monitor</a>. MIT-licensed; free to use and fork.</p>
+  </header>
+  <div class="term" role="img" aria-label="Terminal demo: agent-trace-monitor flagging exfiltration and concealment in a malicious agent trace.">
+    <div class="term-bar">demo &middot; agent-trace-monitor</div>
+    <div class="term-body">
+      <div class="term-cmd"><span class="term-prompt">$</span> <span class="term-type" style="--w:46ch; animation-duration:2.07s; animation-timing-function:steps(46)">python -m agent_trace_monitor --demo malicious</span></div>
+      <div class="term-line" style="animation-delay:2.47s"> Flags : 7  (2 high, 3 medium, 2 low)</div>
+      <div class="term-line t-dim" style="animation-delay:2.6s"> RULE FINDINGS</div>
+      <div class="term-line t-bad" style="animation-delay:2.73s"> [HIGH] step 2  concealment: intends to hide its actions</div>
+      <div class="term-line t-bad" style="animation-delay:2.86s"> [HIGH] step 3  exfiltration: outbound sink carrying a secret</div>
+      <div class="term-line" style="animation-delay:2.99s"> [MED ] step 1  secret-access: reads .env credentials</div>
+      <div class="term-line t-bad" style="animation-delay:3.12s"> RESULT: REVIEW NEEDED</div>
+    </div>
+  </div>
+  <article class="prose">
+    <div class="tldr"><p><strong>In brief.</strong> <strong>agent-trace-monitor</strong> reads an LLM agent's transcript — its tool calls and, ideally, its reasoning — and flags suspicious behavior: covert data exfiltration, access to secrets, destructive actions, drift away from the assigned task, and language suggesting the agent is hiding its intent. Rule-based detectors run with no setup; an optional LLM monitor adds a second opinion over the whole trace. It is the rule-versus-LLM split from AI-control research, packaged so you can run it on your own agent logs.</p></div>
+<h2>The question behind it</h2>
+<p>As agents get more autonomy, the interesting security question stops being "can it be tricked" and becomes "if it did something it shouldn't, would we catch it?" My research has poked at this with monitors that read an agent's actions, and sometimes its reasoning, to decide whether a run was compromised. This tool takes that idea out of the experiment and makes it something you can point at a real transcript.</p>
+
+<h2>How it works</h2>
+<p>You give it a trace — a JSON record of one agent run, with steps for reasoning, tool calls, and messages. The loader is forgiving about shape, because everyone logs agents slightly differently. Then two layers run.</p>
+<p>The <strong>rule detectors</strong> are deterministic and need no keys. They look for outbound data sinks in tool calls (and raise the severity when secret-looking data rides along), references to credentials and <code>.env</code> files, destructive operations, language about hiding actions or covering tracks, and tool steps whose content shares no vocabulary with the stated task. Each finding carries a severity and points at the step it came from.</p>
+<p>The optional <strong>LLM monitor</strong> reads the whole transcript and returns a suspicious-or-clean verdict with a short rationale citing specific steps. It is the judgment layer on top of the mechanical one, and it is off unless you enable it and provide a key.</p>
+<p>Including the agent's reasoning steps makes the monitor noticeably stronger. Intent and concealment usually show up in the reasoning before they show up in an action — though, as my research keeps reminding me, a capable agent can also narrate a clean story while doing something else, so reasoning is useful context, not proof.</p>
+
+<h2>Using it</h2>
+<pre><code># two built-in sample traces
+python -m agent_trace_monitor --demo malicious
+python -m agent_trace_monitor --demo benign
+
+# your own trace, optionally with the LLM monitor
+python -m agent_trace_monitor trace.json
+python -m agent_trace_monitor trace.json --llm</code></pre>
+<p>It exits non-zero on any high-severity finding or an LLM "suspicious" verdict, so it can gate an evaluation pipeline.</p>
+
+<h2>Limits</h2>
+<p>This is heuristic triage, not proof. The rule layer flags patterns a human or the LLM monitor should confirm, and the goal-drift check in particular is a weak lexical signal. The monitor only sees what the transcript contains — an agent that misbehaves through a tool whose output isn't logged won't be caught — and the detectors are keyword-oriented, so obfuscated or non-English traces need pattern additions. It is a starting point you tune to your own agents, not a finished control.</p>
+  </article>
+  <p class="repo-note" style="max-width:42rem;margin:3rem auto 0;">Questions or feedback? <a href="/contact.html">Send me a note &rarr;</a></p>
+  <footer><a class="back" href="/tools/">&larr; All tools</a></footer>
+</main>
+</body>
+</html>
