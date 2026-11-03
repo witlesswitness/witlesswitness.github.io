@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="A local secret & PII scanner for git repos: working tree, full history, and commit messages, with redacted, severity-ranked output.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leakcheck — Charles Timmons">
+<meta property="og:description" content="A local secret & PII scanner for git repos: working tree, full history, and commit messages, with redacted, severity-ranked output.">
+<meta property="og:url" content="https://www.charlestimmons.com/tools/leakcheck/">
+<title>leakcheck — Charles Timmons</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f3f1e9, #111719);
+    --fg: light-dark(#202b2b, #f0f0e7);
+    --muted: light-dark(#778780, #8ba39a);
+    --accent: light-dark(#176b58, #a4f4d0);
+    --line: light-dark(#c9d0c7, #344340);
+    --focus: light-dark(#176b58, #a4f4d0);
+    --danger: light-dark(#b5451f, #e8856a);
+  }
+  * { box-sizing: border-box; }
+  html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { width: min(100% - 3rem, 760px); margin: 0 auto; padding: 2.5rem 0 5rem; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .eyebrow, .status, .meta, .back { font: 500 .68rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .eyebrow, .meta { color: var(--muted); }
+  .eyebrow { margin: 0; }
+  .eyebrow a, .back { color: var(--muted); text-decoration: none; }
+  .eyebrow a:hover, .back:hover { color: var(--accent); }
+  .status { color: var(--accent); text-align: right; }
+  header { padding: clamp(3.5rem, 10vw, 6rem) 0 2.5rem; }
+  h1, h2 { font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; }
+  h1 { max-width: 18ch; margin: 0; font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -.045em; line-height: 1.02; }
+  .deck { max-width: 36rem; margin: 1.5rem 0 2rem; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.4rem); line-height: 1.55; }
+  .byline { margin: 0; font-size: .95rem; line-height: 1.7; }
+  .repo-note { margin: 1.5rem 0 0; font: 500 .72rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; color: var(--muted); }
+  .repo-note a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .posture { margin: 0 0 1.25rem; }
+  .tag-blue { display: inline-block; padding: .18rem .6rem; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 999px; font: 500 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .prose { max-width: 42rem; margin-inline: auto; font-family: Iowan Old Style, Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.08rem, 2.2vw, 1.2rem); line-height: 1.85; }
+  .prose p { margin: 0 0 1.55em; }
+  .prose h2 { margin: 3.4rem 0 1.25rem; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.025em; }
+  .prose a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .prose a:hover { text-decoration-thickness: 2px; }
+  .prose em { font-style: italic; }
+  .prose strong { font-weight: 700; }
+  .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .86em; background: color-mix(in srgb, var(--accent) 10%, transparent); padding: .08em .35em; border-radius: 4px; }
+  .prose ul { margin: 0 0 1.55em; padding-left: 1.3em; }
+  .prose li { margin: 0 0 .6em; }
+  .prose pre { margin: 1.8rem 0; padding: 1.1rem 1.25rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--muted) 10%, transparent); overflow-x: auto; }
+  .prose pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .8rem; line-height: 1.7; background: none; padding: 0; border-radius: 0; color: var(--fg); white-space: pre; }
+  .term { max-width: 42rem; margin: 0 auto 2.6rem; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--muted) 9%, transparent); }
+  .term-bar { padding: .55rem .9rem; border-bottom: 1px solid var(--line); font: 500 .6rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .term-body { padding: 1rem 1.1rem 1.2rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .74rem; line-height: 1.75; white-space: pre; overflow-x: auto; color: var(--fg); }
+  .term-cmd { margin-bottom: .35rem; }
+  .term-prompt { color: var(--accent); }
+  .term-type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; animation-name: termtype; animation-fill-mode: both; animation-delay: .25s; }
+  .term-line { opacity: 0; animation: termline .34s ease both; }
+  .t-bad { color: var(--danger); }
+  .t-ok { color: var(--accent); }
+  .t-dim { color: var(--muted); }
+  @keyframes termtype { from { width: 0; } to { width: var(--w); } }
+  @keyframes termline { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .term-type { width: var(--w) !important; animation: none !important; }
+    .term-line { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+  .tldr { max-width: 42rem; margin: 0 auto 1rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--accent) 6%, transparent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: 1.7; }
+  .tldr p { margin: 0; }
+  .tldr strong { font-weight: 650; }
+  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 520px) { main { width: calc(100% - 2.5rem); padding-top: 1.5rem; } .topline { align-items: flex-start; } .status { max-width: 11rem; } header { padding-top: 3.5rem; } .prose { line-height: 1.78; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<link rel="canonical" href="https://www.charlestimmons.com/tools/leakcheck/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<main>
+  <div class="topline">
+    <p class="eyebrow"><a href="/">Charles Timmons</a> / <a href="/tools/">Tools</a></p>
+    <span class="status">Tool &middot; 4 min read</span>
+  </div>
+  <header>
+    <p class="posture"><span class="tag-blue">Blue team</span></p>
+    <h1>leakcheck</h1>
+    <p class="deck">Find leaked secrets and PII in a repo — including the ones hiding in its history.</p>
+    <p class="byline">By Charles Timmons <span aria-hidden="true">&middot;</span> <time datetime="2026-11-02">November 2, 2026</time></p>
+    <p class="repo-note">Source &amp; docs: <a href="https://github.com/witlesswitness/sec-toolkit/tree/main/leakcheck">github.com/witlesswitness/sec-toolkit/leakcheck</a>. MIT-licensed; free to use and fork.</p>
+  </header>
+  <div class="term" role="img" aria-label="Terminal demo: leakcheck scanning a demo repo and finding secrets in files, history, and a commit message.">
+    <div class="term-bar">demo &middot; leakcheck</div>
+    <div class="term-body">
+      <div class="term-cmd"><span class="term-prompt">$</span> <span class="term-type" style="--w:26ch; animation-duration:1.17s; animation-timing-function:steps(26)">python -m leakcheck --demo</span></div>
+      <div class="term-line t-dim" style="animation-delay:1.57s"> LEAKCHECK — secret &amp; PII scan</div>
+      <div class="term-line" style="animation-delay:1.7s"> Scanned : worktree, history, commit messages/metadata</div>
+      <div class="term-line" style="animation-delay:1.83s"> Findings: 12  (5 critical, 1 high, 1 medium, 5 low)</div>
+      <div class="term-line t-dim" style="animation-delay:1.96s"> SECRETS</div>
+      <div class="term-line t-bad" style="animation-delay:2.09s">  [CRIT] GitHub token      commit message   ghp_…aaaa</div>
+      <div class="term-line t-bad" style="animation-delay:2.22s">  [CRIT] Stripe live key   git history      sk_l…lmno</div>
+      <div class="term-line t-bad" style="animation-delay:2.35s">  [CRIT] Private key block working tree     ----…----</div>
+      <div class="term-line t-bad" style="animation-delay:2.48s">  [HIGH] AWS access key    git history      AKIA…MPLE</div>
+      <div class="term-line t-bad" style="animation-delay:2.61s"> RESULT: 6 high-risk secret(s) — rotate and purge from history.</div>
+    </div>
+  </div>
+  <article class="prose">
+    <div class="tldr"><p><strong>In brief.</strong> <strong>leakcheck</strong> scans a local git repo for leaked secrets and PII — not just the current files, but the <em>full commit history</em> and <em>commit messages</em>, where an accidentally-committed key usually survives long after it's “deleted.” It knows the formats of common credentials (AWS, GitHub, Stripe, Slack, Google, private keys, JWTs), finds emails and IPs, shows every secret <em>redacted</em>, ranks by severity, and exits non-zero on a high-risk find so it fits CI.</p></div>
+<h2>Why I built it</h2>
+<p>Right after I shipped this site I found my own email address sitting in years of git history, and cleaning it meant rewriting every commit — deleting a value in a new commit does nothing, because the old one still lives in history. That is the whole problem with committed secrets: the dangerous copy is almost never the one in the current files. I wanted a tool that looks where the leak actually hides.</p>
+
+<h2>How it works</h2>
+<p>You point it at a local repo and it scans three places: the <strong>working tree</strong> (current files), the <strong>full history</strong> (every line ever added, via <code>git log -p</code>, so a secret removed in a later commit is still caught), and <strong>commit messages and author metadata</strong> (where emails, IPs, and the occasional pasted token end up).</p>
+<p>Detection is high-precision by default: regexes for the formats real credentials take — private key blocks, AWS access keys, GitHub classic and fine-grained tokens, Stripe live keys, Slack, Google, SendGrid, Twilio, npm, JWTs — plus a conservative <code>key = "value"</code> pattern, and emails and IP addresses for PII. Two noisier modes are opt-in: <code>--entropy</code> catches unknown key shapes by randomness, and <code>--aggressive-pii</code> adds phone/SSN-style patterns.</p>
+<p>Every secret is printed <strong>redacted</strong> — <code>ghp_…aaaa</code>, <code>AKIA…MPLE</code> — never in full, so the report itself isn't a new leak.</p>
+
+<h2>Using it</h2>
+<pre><code># build a throwaway repo with planted fake secrets and scan it
+python -m leakcheck --demo
+
+# scan a repo you control
+python -m leakcheck /path/to/repo
+python -m leakcheck /path/to/repo --no-history        # working tree only, fast
+python -m leakcheck /path/to/repo --format json -o findings.json</code></pre>
+<p>It exits <code>1</code> when a critical or high-severity secret is found, so a CI job fails the build if someone commits a key.</p>
+
+<h2>Scope — and a deliberate limit</h2>
+<p>leakcheck is for scanning repos you own or are authorized to assess: your own exposure, or a client's with permission. I built it that way on purpose. A tool that trawled arbitrary public repositories to collect other people's keys and personal data would be a harvesting tool, not a defensive one, so it isn't that. If you ever find a real secret in a repo you don't own, the right move is to tell the owner or GitHub — not to use it.</p>
+
+<h2>If it finds something real</h2>
+<p>Assume a committed secret is compromised and <strong>rotate it</strong> first. Then remove it from <em>history</em>, not just the latest commit, and force-push — the same rewrite I had to do for my own leak. leakcheck tells you what's exposed and where; rotating and rewriting is the follow-up only you can do.</p>
+  </article>
+  <p class="repo-note" style="max-width:42rem;margin:3rem auto 0;">Questions or feedback? <a href="/contact.html">Send me a note &rarr;</a></p>
+  <footer><a class="back" href="/tools/">&larr; All tools</a></footer>
+</main>
+</body>
+</html>
